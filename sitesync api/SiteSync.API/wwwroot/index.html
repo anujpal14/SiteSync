@@ -1,0 +1,866 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>SiteSync — Contractor Platform</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --bg:#0f0f13;--surface:#17171f;--surface2:#1e1e28;--surface3:#252532;
+  --border:rgba(255,255,255,0.07);--border2:rgba(255,255,255,0.13);
+  --text:#f0eff8;--muted:#8a899a;--muted2:#5a5968;
+  --accent:#6c63ff;--accent2:#ff6b6b;--accent3:#43e8a0;--accent4:#ffa94d;--accent5:#4ecdc4;
+  --fd:'Syne',sans-serif;--fb:'DM Sans',sans-serif;--r:14px;--rs:9px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{font-size:14px}
+body{background:var(--bg);color:var(--text);font-family:var(--fb);min-height:100vh;display:flex;overflow-x:hidden}
+
+/* ── SIDEBAR ── */
+.sidebar{width:232px;min-height:100vh;background:var(--surface);border-right:1px solid var(--border);display:flex;flex-direction:column;padding:24px 0;position:fixed;top:0;left:0;bottom:0;z-index:200}
+.sb-logo{padding:0 20px 22px;border-bottom:1px solid var(--border);margin-bottom:16px}
+.logo-wrap{display:flex;align-items:center;gap:10px}
+.logo-ic{width:34px;height:34px;background:var(--accent);border-radius:9px;display:flex;align-items:center;justify-content:center;font-family:var(--fd);font-weight:800;font-size:14px;color:#fff}
+.logo-tx{font-family:var(--fd);font-weight:700;font-size:17px;letter-spacing:-.5px}
+.logo-tx span{color:var(--accent)}
+.nav-sec{padding:0 10px;margin-bottom:6px}
+.nav-lbl{font-size:9.5px;font-weight:500;letter-spacing:1.6px;color:var(--muted2);text-transform:uppercase;padding:0 10px;margin-bottom:5px}
+.nav-item{display:flex;align-items:center;gap:11px;padding:9px 10px;border-radius:var(--rs);color:var(--muted);font-size:13px;cursor:pointer;transition:all .15s;border:1px solid transparent;margin-bottom:2px;user-select:none}
+.nav-item:hover{background:var(--surface2);color:var(--text)}
+.nav-item.active{background:rgba(108,99,255,.13);color:var(--accent);border-color:rgba(108,99,255,.22)}
+.nav-ic{width:18px;height:18px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.nav-ic svg{width:15px;height:15px}
+.nav-badge{margin-left:auto;background:var(--accent2);color:#fff;font-size:9.5px;font-weight:600;padding:2px 6px;border-radius:20px}
+.sb-footer{margin-top:auto;padding:18px 20px 0;border-top:1px solid var(--border)}
+.user-card{display:flex;align-items:center;gap:9px;padding:9px;border-radius:var(--rs);cursor:pointer;transition:background .15s}
+.user-card:hover{background:var(--surface2)}
+.av-circle{width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--accent5));display:flex;align-items:center;justify-content:center;font-family:var(--fd);font-weight:700;font-size:12px;color:#fff;flex-shrink:0}
+.u-name{font-size:12.5px;font-weight:500}
+.u-role{font-size:10.5px;color:var(--muted)}
+/* ── MAIN ── */
+.main{margin-left:232px;flex:1;display:flex;flex-direction:column;min-height:100vh}
+.topbar{height:60px;background:var(--surface);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 28px;gap:14px;position:sticky;top:0;z-index:100}
+.tb-title{font-family:var(--fd);font-weight:700;font-size:17px;letter-spacing:-.5px}
+.tb-sub{font-size:11px;color:var(--muted);margin-top:1px}
+.tb-right{margin-left:auto;display:flex;align-items:center;gap:10px}
+.search-bar{display:flex;align-items:center;gap:7px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:6px 12px;width:200px;transition:border .15s}
+.search-bar:focus-within{border-color:var(--accent)}
+.search-bar input{background:none;border:none;outline:none;color:var(--text);font-family:var(--fb);font-size:12.5px;width:100%}
+.search-bar input::placeholder{color:var(--muted)}
+.icon-btn{width:34px;height:34px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .15s;position:relative}
+.icon-btn:hover{border-color:var(--border2)}
+.icon-btn svg{width:15px;height:15px;stroke:var(--muted)}
+.notif-dot{position:absolute;top:6px;right:6px;width:6px;height:6px;background:var(--accent2);border-radius:50%;border:1.5px solid var(--surface)}
+/* ── PAGES ── */
+.page{padding:28px;flex:1;display:none;animation:fadeIn .3s ease}
+.page.active{display:block}
+@keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+/* ── SHARED ── */
+.page-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:22px}
+.page-title{font-family:var(--fd);font-size:20px;font-weight:700;letter-spacing:-.5px}
+.page-sub{font-size:12px;color:var(--muted);margin-top:3px}
+.btn{display:inline-flex;align-items:center;gap:7px;padding:9px 18px;border-radius:var(--rs);font-family:var(--fb);font-size:13px;font-weight:500;cursor:pointer;transition:all .15s;border:none;outline:none}
+.btn-primary{background:var(--accent);color:#fff}
+.btn-primary:hover{background:#5a52e0}
+.btn-ghost{background:var(--surface2);color:var(--text);border:1px solid var(--border)}
+.btn-ghost:hover{border-color:var(--border2)}
+.btn-danger{background:rgba(255,107,107,.1);color:var(--accent2);border:1px solid rgba(255,107,107,.2)}
+.btn-danger:hover{background:rgba(255,107,107,.2)}
+.btn svg{width:14px;height:14px;stroke:currentColor;fill:none}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:20px}
+.card-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+.card-title{font-family:var(--fd);font-size:14px;font-weight:700;letter-spacing:-.3px}
+/* ── KPI ── */
+.kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:22px}
+.kpi-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:18px 20px;display:flex;flex-direction:column;gap:12px;animation:fadeUp .4s ease both}
+.kpi-card:hover{border-color:var(--border2);transform:translateY(-2px);transition:all .2s}
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+.kpi-top{display:flex;align-items:center;justify-content:space-between}
+.kpi-icon{width:36px;height:36px;border-radius:9px;display:flex;align-items:center;justify-content:center}
+.kpi-icon svg{width:17px;height:17px}
+.kpi-trend{font-size:11px;font-weight:500;padding:2px 7px;border-radius:20px}
+.trend-up{background:rgba(67,232,160,.1);color:var(--accent3)}
+.trend-dn{background:rgba(255,107,107,.1);color:var(--accent2)}
+.kpi-val{font-family:var(--fd);font-size:26px;font-weight:700;letter-spacing:-1px}
+.kpi-lbl{font-size:11.5px;color:var(--muted);margin-top:2px}
+/* ── TABLE ── */
+.tbl{width:100%;border-collapse:collapse}
+.tbl th{text-align:left;font-size:10px;font-weight:500;color:var(--muted);text-transform:uppercase;letter-spacing:1px;padding:0 12px 10px;border-bottom:1px solid var(--border)}
+.tbl td{padding:11px 12px;font-size:12.5px;border-bottom:1px solid var(--border);vertical-align:middle}
+.tbl tr:last-child td{border-bottom:none}
+.tbl tbody tr:hover td{background:rgba(255,255,255,.02);cursor:pointer}
+.pill{display:inline-flex;align-items:center;font-size:10.5px;font-weight:500;padding:3px 9px;border-radius:20px}
+.pill-green{background:rgba(67,232,160,.1);color:var(--accent3)}
+.pill-amber{background:rgba(255,169,77,.1);color:var(--accent4)}
+.pill-purple{background:rgba(108,99,255,.1);color:var(--accent)}
+.pill-red{background:rgba(255,107,107,.1);color:var(--accent2)}
+.pill-teal{background:rgba(78,205,196,.1);color:var(--accent5)}
+.progress-wrap{width:80px;background:var(--surface2);border-radius:3px;height:5px;overflow:hidden;display:inline-block}
+.progress-bar{height:100%;border-radius:3px}
+.dot{display:inline-block;width:7px;height:7px;border-radius:50%;margin-right:7px}
+/* ── MODAL ── */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.65);z-index:500;align-items:center;justify-content:center;backdrop-filter:blur(3px)}
+.modal-overlay.open{display:flex}
+.modal{background:var(--surface);border:1px solid var(--border2);border-radius:var(--r);padding:28px;width:500px;max-width:95vw;animation:fadeIn .2s ease}
+.modal-title{font-family:var(--fd);font-size:17px;font-weight:700;margin-bottom:20px;letter-spacing:-.4px}
+.form-row{margin-bottom:14px}
+.form-label{display:block;font-size:11px;font-weight:500;color:var(--muted);margin-bottom:6px;letter-spacing:.3px;text-transform:uppercase}
+.form-input{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:var(--rs);padding:9px 13px;color:var(--text);font-family:var(--fb);font-size:13px;outline:none;transition:border .15s}
+.form-input:focus{border-color:var(--accent)}
+.form-input option{background:var(--surface2)}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.modal-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:22px;border-top:1px solid var(--border);padding-top:18px}
+/* ── TOAST ── */
+.toast{position:fixed;bottom:28px;right:28px;background:var(--surface3);border:1px solid var(--border2);border-radius:var(--rs);padding:13px 18px;font-size:13px;color:var(--text);z-index:999;transform:translateY(20px);opacity:0;transition:all .3s ease;pointer-events:none;display:flex;align-items:center;gap:9px;min-width:220px}
+.toast.show{transform:translateY(0);opacity:1}
+.toast-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+/* ── LOADER ── */
+.loader{display:inline-block;width:16px;height:16px;border:2px solid var(--border2);border-top-color:var(--accent);border-radius:50%;animation:spin .7s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.page-loader{display:flex;align-items:center;justify-content:center;height:200px;gap:12px;color:var(--muted);font-size:13px}
+/* ── DASHBOARD ── */
+.mid-row{display:grid;grid-template-columns:1fr 300px;gap:14px;margin-bottom:22px}
+.bot-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px}
+.act-item{display:flex;gap:11px;align-items:flex-start;padding:11px 0;border-bottom:1px solid var(--border)}
+.act-item:last-child{border-bottom:none}
+.act-ic{width:30px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:12px}
+.act-tx{font-size:12px;line-height:1.5}
+.act-time{font-size:10.5px;color:var(--muted);margin-top:2px}
+.mini-chart{height:56px;display:flex;align-items:flex-end;gap:3px;margin:14px 0 6px}
+.bc{flex:1;border-radius:2px 2px 0 0;background:rgba(108,99,255,.2);cursor:pointer;transition:background .15s}
+.bc:hover,.bc.hl{background:var(--accent)}
+.fin-row{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.fin-lbl{font-size:12px;color:var(--muted);flex:1}
+.fin-bw{width:90px;background:var(--surface2);border-radius:3px;height:5px;overflow:hidden}
+.fin-b{height:100%;border-radius:3px}
+.fin-amt{font-size:12px;font-weight:500;min-width:60px;text-align:right}
+.mini-item{display:flex;align-items:center;gap:9px;padding:9px;background:var(--surface2);border-radius:9px;border:1px solid var(--border);margin-bottom:8px;cursor:pointer;transition:border .15s}
+.mini-item:hover{border-color:var(--border2)}
+.mini-av{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:var(--fd);font-weight:700;font-size:11px;color:#fff;flex-shrink:0}
+.mini-av-sq{border-radius:8px}
+/* ── ANALYTICS ── */
+.chart-bars{height:160px;display:flex;align-items:flex-end;gap:6px}
+.chart-bar{flex:1;border-radius:4px 4px 0 0;cursor:pointer;opacity:.75;transition:opacity .2s}
+.chart-bar:hover{opacity:1}
+::-webkit-scrollbar{width:4px}
+::-webkit-scrollbar-thumb{background:var(--border2);border-radius:10px}
+</style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<aside class="sidebar">
+  <div class="sb-logo">
+    <div class="logo-wrap">
+      <div class="logo-ic">SS</div>
+      <div class="logo-tx">Site<span>Sync</span></div>
+    </div>
+  </div>
+  <div class="nav-sec">
+    <div class="nav-lbl">Main</div>
+    <div class="nav-item active" data-page="pg-dashboard">
+      <div class="nav-ic"><svg fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg></div>
+      Dashboard
+    </div>
+    <div class="nav-item" data-page="pg-sites">
+      <div class="nav-ic"><svg fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></div>
+      Sites <span class="nav-badge" id="badge-sites">0</span>
+    </div>
+    <div class="nav-item" data-page="pg-clients">
+      <div class="nav-ic"><svg fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/></svg></div>
+      Clients
+    </div>
+    <div class="nav-item" data-page="pg-labour">
+      <div class="nav-ic"><svg fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg></div>
+      Labour
+    </div>
+    <div class="nav-item" data-page="pg-finance">
+      <div class="nav-ic"><svg fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg></div>
+      Finance
+    </div>
+  </div>
+  <div class="nav-sec" style="margin-top:14px">
+    <div class="nav-lbl">Insights</div>
+    <div class="nav-item" data-page="pg-analytics">
+      <div class="nav-ic"><svg fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M18 20V10M12 20V4M6 20v-6"/></svg></div>
+      Analytics
+    </div>
+    <div class="nav-item" data-page="pg-settings">
+      <div class="nav-ic"><svg fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 010 14.14M4.93 4.93a10 10 0 000 14.14"/></svg></div>
+      Settings
+    </div>
+  </div>
+  <div class="sb-footer">
+    <div class="user-card">
+      <div class="av-circle">RK</div>
+      <div><div class="u-name">Rajesh Kumar</div><div class="u-role">Admin · Contractor</div></div>
+    </div>
+  </div>
+</aside>
+
+<!-- MAIN -->
+<div class="main">
+  <div class="topbar">
+    <div>
+      <div class="tb-title" id="tb-title">Dashboard</div>
+      <div class="tb-sub" id="tb-sub">Loading…</div>
+    </div>
+    <div class="tb-right">
+      <div class="search-bar">
+        <svg width="13" height="13" fill="none" stroke="var(--muted)" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input type="text" placeholder="Search sites, clients…" id="gSearch"/>
+      </div>
+      <div class="icon-btn"><svg fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 01-3.46 0"/></svg><div class="notif-dot"></div></div>
+    </div>
+  </div>
+
+  <!-- DASHBOARD -->
+  <div class="page active" id="pg-dashboard">
+    <div class="kpi-grid" id="dash-kpis"><div class="page-loader" style="grid-column:1/-1"><div class="loader"></div> Loading…</div></div>
+    <div class="mid-row">
+      <div class="card"><div class="card-hd"><div class="card-title">Site Overview</div><button class="btn btn-ghost" style="font-size:11.5px;padding:6px 12px" onclick="navigate('pg-sites')">View all →</button></div><div id="dash-sites-body"><div class="page-loader"><div class="loader"></div></div></div></div>
+      <div class="card"><div class="card-hd"><div class="card-title">Recent Activity</div></div><div id="dash-activity"><div class="page-loader"><div class="loader"></div></div></div></div>
+    </div>
+    <div class="bot-row">
+      <div class="card"><div class="card-hd"><div class="card-title">Labour on Sites</div><button class="btn btn-ghost" style="font-size:11.5px;padding:6px 12px" onclick="navigate('pg-labour')">Manage →</button></div><div id="dash-labour"></div></div>
+      <div class="card"><div class="card-hd"><div class="card-title">Finance Summary</div><button class="btn btn-ghost" style="font-size:11.5px;padding:6px 12px" onclick="navigate('pg-finance')">Details →</button></div><div class="mini-chart" id="dash-chart"></div><div style="display:flex;justify-content:space-between;font-size:9.5px;color:var(--muted);margin-bottom:14px" id="dash-chart-labels"></div><div id="dash-finance"></div></div>
+      <div class="card"><div class="card-hd"><div class="card-title">Top Clients</div><button class="btn btn-ghost" style="font-size:11.5px;padding:6px 12px" onclick="navigate('pg-clients')">View all →</button></div><div id="dash-clients"></div></div>
+    </div>
+  </div>
+
+  <!-- SITES -->
+  <div class="page" id="pg-sites">
+    <div class="page-hd"><div><div class="page-title">Sites</div><div class="page-sub">Manage all project locations</div></div><button class="btn btn-primary" onclick="openModal('m-site')"><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Add Site</button></div>
+    <div class="kpi-grid" style="grid-template-columns:repeat(3,1fr)" id="sites-kpis"></div>
+    <div class="card">
+      <div class="card-hd"><div class="card-title">All Sites</div>
+        <select class="form-input" style="width:130px;padding:6px 10px;font-size:12px" onchange="loadSites(this.value)"><option value="">All Status</option><option value="active">Active</option><option value="hold">On Hold</option><option value="done">Completed</option></select>
+      </div>
+      <table class="tbl"><thead><tr><th>Site Name</th><th>City</th><th>Client</th><th>Start Date</th><th>Budget</th><th>Progress</th><th>Status</th><th>Action</th></tr></thead><tbody id="sites-tbody"></tbody></table>
+    </div>
+  </div>
+
+  <!-- CLIENTS -->
+  <div class="page" id="pg-clients">
+    <div class="page-hd"><div><div class="page-title">Clients</div><div class="page-sub">All client relationships</div></div><button class="btn btn-primary" onclick="openModal('m-client')"><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Add Client</button></div>
+    <div class="card"><div class="card-hd"><div class="card-title">Client Directory</div></div><table class="tbl"><thead><tr><th>Name</th><th>Phone</th><th>City</th><th>Sites</th><th>Total Value</th><th>Status</th><th>Action</th></tr></thead><tbody id="clients-tbody"></tbody></table></div>
+  </div>
+
+  <!-- LABOUR -->
+  <div class="page" id="pg-labour">
+    <div class="page-hd"><div><div class="page-title">Labour</div><div class="page-sub">Workers, attendance & wages</div></div><button class="btn btn-primary" onclick="openModal('m-labour')"><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Add Worker</button></div>
+    <div class="kpi-grid" style="grid-template-columns:repeat(3,1fr)" id="labour-kpis"></div>
+    <div class="card"><div class="card-hd"><div class="card-title">All Workers</div></div><table class="tbl"><thead><tr><th>Name</th><th>Role</th><th>Site Assigned</th><th>City</th><th>Daily Wage</th><th>Today</th><th>Action</th></tr></thead><tbody id="labour-tbody"></tbody></table></div>
+  </div>
+
+  <!-- FINANCE -->
+  <div class="page" id="pg-finance">
+    <div class="page-hd"><div><div class="page-title">Finance</div><div class="page-sub">Budgets, invoices & payments</div></div><button class="btn btn-primary" onclick="openModal('m-invoice')"><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>New Invoice</button></div>
+    <div class="kpi-grid" id="finance-kpis"></div>
+    <div class="card"><div class="card-hd"><div class="card-title">Invoices</div><select class="form-input" style="width:130px;padding:6px 10px;font-size:12px" onchange="loadInvoices(this.value)"><option value="">All</option><option value="sent">Sent</option><option value="paid">Paid</option><option value="pending">Pending</option><option value="overdue">Overdue</option></select></div><table class="tbl"><thead><tr><th>Invoice #</th><th>Client</th><th>Site</th><th>Date</th><th>Amount</th><th>Status</th><th style="text-align:right">Action</th></tr></thead><tbody id="finance-tbody"></tbody></table></div>
+  </div>
+
+  <!-- ANALYTICS -->
+  <div class="page" id="pg-analytics">
+    <div class="page-hd"><div><div class="page-title">Analytics</div><div class="page-sub">Performance overview</div></div></div>
+    <div class="kpi-grid" id="analytics-kpis"></div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+      <div class="card"><div class="card-hd"><div class="card-title">Monthly Revenue</div></div><div class="chart-bars" id="rev-chart"></div><div style="display:flex;justify-content:space-around;margin-top:6px" id="rev-labels"></div></div>
+      <div class="card"><div class="card-hd"><div class="card-title">Site Progress</div></div><div id="site-progress-list" style="margin-top:8px"></div></div>
+    </div>
+  </div>
+
+  <!-- SETTINGS -->
+  <div class="page" id="pg-settings">
+    <div class="page-hd"><div><div class="page-title">Settings</div></div></div>
+    <div style="display:grid;grid-template-columns:220px 1fr;gap:20px">
+      <div class="card" style="padding:12px;height:fit-content" id="settings-nav"></div>
+      <div class="card" id="settings-body"></div>
+    </div>
+  </div>
+</div>
+
+<!-- MODALS -->
+<div class="modal-overlay" id="m-site">
+  <div class="modal">
+    <div class="modal-title">Add New Site</div>
+    <div class="form-grid">
+      <div class="form-row"><label class="form-label">Site Name</label><input class="form-input" id="s-name" placeholder="e.g. Sharma Villa"/></div>
+      <div class="form-row"><label class="form-label">City</label><input class="form-input" id="s-city" placeholder="e.g. Mumbai"/></div>
+      <div class="form-row"><label class="form-label">Client</label><select class="form-input" id="s-client"><option value="">Select Client</option></select></div>
+      <div class="form-row"><label class="form-label">Start Date</label><input class="form-input" type="date" id="s-date"/></div>
+      <div class="form-row"><label class="form-label">Budget (₹)</label><input class="form-input" id="s-budget" placeholder="e.g. 1500000" type="number"/></div>
+      <div class="form-row"><label class="form-label">Status</label><select class="form-input" id="s-status"><option value="active">Active</option><option value="hold">On Hold</option><option value="done">Completed</option></select></div>
+    </div>
+    <div class="form-row"><label class="form-label">Address</label><input class="form-input" id="s-addr" placeholder="Full site address"/></div>
+    <div class="modal-actions"><button class="btn btn-ghost" onclick="closeModal('m-site')">Cancel</button><button class="btn btn-primary" onclick="submitSite()">Add Site</button></div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="m-client">
+  <div class="modal">
+    <div class="modal-title">Add New Client</div>
+    <div class="form-grid">
+      <div class="form-row"><label class="form-label">Full Name</label><input class="form-input" id="c-name" placeholder="e.g. Anil Sharma"/></div>
+      <div class="form-row"><label class="form-label">Phone</label><input class="form-input" id="c-phone" placeholder="+91 98765 43210"/></div>
+      <div class="form-row"><label class="form-label">Email</label><input class="form-input" id="c-email" placeholder="email@example.com"/></div>
+      <div class="form-row"><label class="form-label">City</label><input class="form-input" id="c-city" placeholder="e.g. Mumbai"/></div>
+    </div>
+    <div class="form-row"><label class="form-label">Address</label><input class="form-input" id="c-addr" placeholder="Full address"/></div>
+    <div class="modal-actions"><button class="btn btn-ghost" onclick="closeModal('m-client')">Cancel</button><button class="btn btn-primary" onclick="submitClient()">Add Client</button></div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="m-labour">
+  <div class="modal">
+    <div class="modal-title">Add New Worker</div>
+    <div class="form-grid">
+      <div class="form-row"><label class="form-label">Full Name</label><input class="form-input" id="l-name" placeholder="e.g. Ravi Teja"/></div>
+      <div class="form-row"><label class="form-label">Role</label><select class="form-input" id="l-role"><option>Supervisor</option><option>Electrician</option><option>Carpenter</option><option>Painter</option><option>Plumber</option><option>Mason</option><option>Helper</option></select></div>
+      <div class="form-row"><label class="form-label">Phone</label><input class="form-input" id="l-phone" placeholder="+91 …"/></div>
+      <div class="form-row"><label class="form-label">Daily Wage (₹)</label><input class="form-input" id="l-wage" placeholder="e.g. 800" type="number"/></div>
+      <div class="form-row"><label class="form-label">Assign to Site</label><select class="form-input" id="l-site"><option value="">Select Site</option></select></div>
+      <div class="form-row"><label class="form-label">Today's Status</label><select class="form-input" id="l-today"><option value="present">Present</option><option value="absent">Absent</option></select></div>
+    </div>
+    <div class="modal-actions"><button class="btn btn-ghost" onclick="closeModal('m-labour')">Cancel</button><button class="btn btn-primary" onclick="submitLabour()">Add Worker</button></div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="m-invoice">
+  <div class="modal">
+    <div class="modal-title">New Invoice</div>
+    <div class="form-grid">
+      <div class="form-row"><label class="form-label">Client</label><select class="form-input" id="i-client"><option value="">Select Client</option></select></div>
+      <div class="form-row"><label class="form-label">Site</label><select class="form-input" id="i-site"><option value="">Select Site</option></select></div>
+      <div class="form-row"><label class="form-label">Amount (₹)</label><input class="form-input" id="i-amount" placeholder="e.g. 250000" type="number"/></div>
+      <div class="form-row"><label class="form-label">Due Date</label><input class="form-input" type="date" id="i-due"/></div>
+    </div>
+    <div class="form-row"><label class="form-label">Notes</label><input class="form-input" id="i-notes" placeholder="Optional notes"/></div>
+    <div class="modal-actions"><button class="btn btn-ghost" onclick="closeModal('m-invoice')">Cancel</button><button class="btn btn-primary" onclick="submitInvoice()">Create Invoice</button></div>
+  </div>
+</div>
+
+<div class="toast" id="toast"><div class="toast-dot" id="toast-dot"></div><span id="toast-msg"></span></div>
+
+<script>
+// ══════════════════════════════════════════════════════
+//  CONFIG — change this to your actual API URL
+// ══════════════════════════════════════════════════════
+const API_BASE = 'http://localhost:5000/api';
+
+// ══════════════════════════════════════════════════════
+//  API LAYER — all fetch calls go through here
+// ══════════════════════════════════════════════════════
+const api = {
+  async get(path) {
+    const r = await fetch(`${API_BASE}${path}`);
+    const j = await r.json();
+    if (!j.success) throw new Error(j.message);
+    return j.data;
+  },
+  async post(path, body) {
+    const r = await fetch(`${API_BASE}${path}`, {
+      method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify(body)
+    });
+    const j = await r.json();
+    if (!r.ok) throw new Error(j.message || 'Request failed');
+    return j.data;
+  },
+  async patch(path, body) {
+    const r = await fetch(`${API_BASE}${path}`, {
+      method: 'PATCH', headers: {'Content-Type':'application/json'}, body: JSON.stringify(body)
+    });
+    const j = await r.json();
+    if (!r.ok) throw new Error(j.message || 'Request failed');
+    return j;
+  },
+  async del(path) {
+    const r = await fetch(`${API_BASE}${path}`, { method: 'DELETE' });
+    const j = await r.json();
+    if (!r.ok) throw new Error(j.message || 'Delete failed');
+    return j;
+  }
+};
+
+// ══════════════════════════════════════════════════════
+//  NAVIGATION
+// ══════════════════════════════════════════════════════
+const PAGE_META = {
+  'pg-dashboard':{'title':'Dashboard','sub':'Overview across all sites'},
+  'pg-sites':    {'title':'Sites',    'sub':'Manage all project locations'},
+  'pg-clients':  {'title':'Clients',  'sub':'All your client relationships'},
+  'pg-labour':   {'title':'Labour',   'sub':'Workers, attendance & wages'},
+  'pg-finance':  {'title':'Finance',  'sub':'Budgets, invoices & payments'},
+  'pg-analytics':{'title':'Analytics','sub':'Performance across sites'},
+  'pg-settings': {'title':'Settings', 'sub':'Platform preferences'},
+};
+
+function navigate(pageId) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById(pageId)?.classList.add('active');
+  document.querySelector(`[data-page="${pageId}"]`)?.classList.add('active');
+  const m = PAGE_META[pageId] || {};
+  document.getElementById('tb-title').textContent = m.title || '';
+  document.getElementById('tb-sub').textContent   = m.sub   || '';
+  renderPage(pageId);
+}
+
+document.querySelectorAll('.nav-item').forEach(n =>
+  n.addEventListener('click', () => navigate(n.dataset.page)));
+
+async function renderPage(id) {
+  try {
+    if (id === 'pg-dashboard') await renderDashboard();
+    if (id === 'pg-sites')     await loadSites();
+    if (id === 'pg-clients')   await loadClients();
+    if (id === 'pg-labour')    await loadLabour();
+    if (id === 'pg-finance')   await loadInvoices();
+    if (id === 'pg-analytics') await renderAnalytics();
+    if (id === 'pg-settings')  renderSettings();
+  } catch(e) { showToast('API error: ' + e.message, 'var(--accent2)'); }
+}
+
+// ══════════════════════════════════════════════════════
+//  HELPERS
+// ══════════════════════════════════════════════════════
+const INI = s => (s||'').split(' ').map(w=>w[0]||'').join('').toUpperCase().slice(0,2);
+const FMT = n => n >= 10000000 ? '₹'+(n/10000000).toFixed(1)+'Cr'
+                : n >= 100000  ? '₹'+(n/100000).toFixed(1)+'L'
+                : '₹'+Number(n).toLocaleString('en-IN');
+const AVC = i => ['#6c63ff','#4ecdc4','#43e8a0','#ffa94d','#ff6b6b','#a78bfa','#34d399'][i%7];
+const FMT_DATE = d => d ? new Date(d).toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'}) : '—';
+
+function statusPill(s) {
+  const m = {active:'pill-green',hold:'pill-amber',done:'pill-purple',present:'pill-green',absent:'pill-red',paid:'pill-green',pending:'pill-amber',sent:'pill-teal',overdue:'pill-red',inactive:'pill-amber'};
+  const l = {active:'Active',hold:'On Hold',done:'Complete',present:'Present',absent:'Absent',paid:'Paid',pending:'Pending',sent:'Sent',overdue:'Overdue',inactive:'Inactive'};
+  return `<span class="pill ${m[s]||'pill-amber'}">${l[s]||s}</span>`;
+}
+
+function progressCell(p, color='#6c63ff') {
+  return `<div style="display:flex;align-items:center;gap:7px"><div class="progress-wrap"><div class="progress-bar" style="width:${p}%;background:${color}"></div></div><span style="font-size:10.5px;color:var(--muted)">${p}%</span></div>`;
+}
+
+function kpiCard(icon, iconColor, val, label, trend, trendUp, delay=0) {
+  return `<div class="kpi-card" style="animation-delay:${delay}s">
+    <div class="kpi-top">
+      <div class="kpi-icon" style="background:${iconColor}22">${icon}</div>
+      ${trend ? `<div class="kpi-trend ${trendUp?'trend-up':'trend-dn'}">${trend}</div>` : ''}
+    </div>
+    <div><div class="kpi-val">${val}</div><div class="kpi-lbl">${label}</div></div>
+  </div>`;
+}
+
+const sColorMap = {active:'#43e8a0', hold:'#ffa94d', done:'#6c63ff'};
+
+// ══════════════════════════════════════════════════════
+//  DASHBOARD
+// ══════════════════════════════════════════════════════
+async function renderDashboard() {
+  const dash = await api.get('/dashboard');
+
+  // KPIs
+  document.getElementById('dash-kpis').innerHTML = [
+    kpiCard(`<svg fill="none" stroke="#6c63ff" stroke-width="1.8" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/></svg>`,'#6c63ff', dash.activeSites, 'Active Sites','Live', true, .05),
+    kpiCard(`<svg fill="none" stroke="#4ecdc4" stroke-width="1.8" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>`,'#4ecdc4', dash.totalWorkers, 'Total Workers','On field', true, .1),
+    kpiCard(`<svg fill="none" stroke="#43e8a0" stroke-width="1.8" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>`,'#43e8a0', dash.totalClients, 'Total Clients','Active', true, .15),
+    kpiCard(`<svg fill="none" stroke="#ffa94d" stroke-width="1.8" viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>`,'#ffa94d', FMT(dash.revenueThisMonth), 'Revenue This Month','↑ This month', true, .2),
+  ].join('');
+
+  // Sites table
+  document.getElementById('dash-sites-body').innerHTML = `
+    <table class="tbl"><thead><tr><th>Site</th><th>City</th><th>Client</th><th>Progress</th><th>Status</th></tr></thead>
+    <tbody>${(dash.recentSites||[]).map(s=>`<tr>
+      <td><span class="dot" style="background:${sColorMap[s.status]}"></span>${s.name}</td>
+      <td style="color:var(--muted)">${s.city}</td>
+      <td style="color:var(--muted)">${s.clientName}</td>
+      <td>${progressCell(s.progress, sColorMap[s.status])}</td>
+      <td>${statusPill(s.status)}</td>
+    </tr>`).join('')}</tbody></table>`;
+
+  // Activity
+  document.getElementById('dash-activity').innerHTML = (dash.activities||[]).map(a=>`
+    <div class="act-item">
+      <div class="act-ic" style="background:rgba(108,99,255,.15)"><span style="font-size:13px">${a.icon}</span></div>
+      <div><div class="act-tx">${a.action}</div><div class="act-time">${a.timeAgo}</div></div>
+    </div>`).join('') || '<div style="color:var(--muted);font-size:12px;padding:12px">No recent activity</div>';
+
+  // Labour
+  document.getElementById('dash-labour').innerHTML = (dash.recentWorkers||[]).map((w,i)=>`
+    <div class="mini-item">
+      <div class="mini-av" style="background:${AVC(i)}">${INI(w.name)}</div>
+      <div style="flex:1"><div style="font-size:12px;font-weight:500">${w.name}</div><div style="font-size:10.5px;color:var(--muted)">${w.role} · ${w.siteName||'Unassigned'}</div></div>
+      <div style="width:7px;height:7px;border-radius:50%;background:${w.todayStatus==='present'?'#43e8a0':'#ff6b6b'}"></div>
+    </div>`).join('');
+
+  // Finance mini chart
+  const rev = dash.monthlyRevenue||[];
+  const mx  = Math.max(...rev.map(r=>r.revenue), 1);
+  document.getElementById('dash-chart').innerHTML = rev.map((r,i)=>
+    `<div class="bc${i===rev.length-1?' hl':''}" style="height:${(r.revenue/mx*100)}%" title="${r.month}: ${FMT(r.revenue)}"></div>`).join('');
+  document.getElementById('dash-chart-labels').innerHTML = rev.map(r=>`<span>${r.month}</span>`).join('');
+
+  // Finance summary
+  const tb = dash.totalBudget||1;
+  const sp = dash.revenueThisMonth||0;
+  const rc = dash.revenueThisMonth||0;
+  const pd = dash.pendingInvoices||0;
+  document.getElementById('dash-finance').innerHTML = [
+    {l:'Total Budget', a:FMT(tb), p:100, c:'#6c63ff'},
+    {l:'Received',     a:FMT(rc), p:Math.round(rc/tb*100), c:'#43e8a0'},
+    {l:'Pending',      a:FMT(pd), p:Math.round(pd/tb*100), c:'#ffa94d'},
+  ].map(f=>`<div class="fin-row"><div class="fin-lbl">${f.l}</div><div class="fin-bw"><div class="fin-b" style="width:${f.p}%;background:${f.c}"></div></div><div class="fin-amt">${f.a}</div></div>`).join('');
+
+  // Top clients
+  document.getElementById('dash-clients').innerHTML = (dash.topClients||[]).map((c,i)=>`
+    <div class="mini-item">
+      <div class="mini-av mini-av-sq" style="background:${AVC(i)}">${INI(c.name)}</div>
+      <div style="flex:1"><div style="font-size:12.5px;font-weight:500">${c.name}</div><div style="font-size:10.5px;color:var(--muted)">${c.city}</div></div>
+      <div style="font-size:12px;font-weight:500;color:var(--accent3)">${c.totalValue?FMT(c.totalValue):'—'}</div>
+    </div>`).join('');
+
+  // Update badge
+  document.getElementById('badge-sites').textContent = dash.activeSites;
+  document.getElementById('tb-sub').textContent = `${new Date().toDateString()} · ${dash.activeSites} active sites`;
+}
+
+// ══════════════════════════════════════════════════════
+//  SITES
+// ══════════════════════════════════════════════════════
+async function loadSites(status='') {
+  const sites = await api.get('/sites' + (status ? `?status=${status}` : ''));
+  const active = sites.filter(s=>s.status==='active').length;
+  const hold   = sites.filter(s=>s.status==='hold').length;
+  const done   = sites.filter(s=>s.status==='done').length;
+
+  document.getElementById('sites-kpis').innerHTML = [
+    kpiCard(`<svg fill="none" stroke="#43e8a0" stroke-width="1.8" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>`,'#43e8a0', active,'Active Sites','On track',true,.05),
+    kpiCard(`<svg fill="none" stroke="#ffa94d" stroke-width="1.8" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>`,'#ffa94d', hold,'On Hold','Attention',false,.1),
+    kpiCard(`<svg fill="none" stroke="#6c63ff" stroke-width="1.8" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>`,'#6c63ff', done,'Completed','Done',true,.15),
+  ].join('');
+
+  document.getElementById('badge-sites').textContent = active;
+
+  document.getElementById('sites-tbody').innerHTML = sites.map(s=>`<tr>
+    <td><span class="dot" style="background:${sColorMap[s.status]}"></span><b style="font-weight:500">${s.name}</b></td>
+    <td style="color:var(--muted)">${s.city}</td>
+    <td style="color:var(--muted)">${s.clientName}</td>
+    <td style="color:var(--muted)">${FMT_DATE(s.startDate)}</td>
+    <td style="font-weight:500">${FMT(s.budget)}</td>
+    <td>${progressCell(s.progress, sColorMap[s.status])}</td>
+    <td>${statusPill(s.status)}</td>
+    <td><button class="btn btn-danger" style="font-size:11px;padding:5px 10px" onclick="deleteSite(${s.id})">Delete</button></td>
+  </tr>`).join('') || `<tr><td colspan="8" style="text-align:center;color:var(--muted);padding:28px">No sites found</td></tr>`;
+}
+
+async function submitSite() {
+  const clientId = parseInt(document.getElementById('s-client').value);
+  const name     = document.getElementById('s-name').value.trim();
+  const city     = document.getElementById('s-city').value.trim();
+  if (!name || !city || !clientId) { showToast('Name, city and client are required','var(--accent2)'); return; }
+  await api.post('/sites', { clientId, name, city, address: document.getElementById('s-addr').value, startDate: document.getElementById('s-date').value, budget: parseFloat(document.getElementById('s-budget').value)||0 });
+  closeModal('m-site');
+  showToast('Site added successfully','var(--accent3)');
+  await loadSites();
+}
+
+async function deleteSite(id) {
+  await api.del(`/sites/${id}`);
+  showToast('Site removed','var(--accent2)');
+  await loadSites();
+}
+
+// ══════════════════════════════════════════════════════
+//  CLIENTS
+// ══════════════════════════════════════════════════════
+async function loadClients() {
+  const clients = await api.get('/clients');
+  document.getElementById('clients-tbody').innerHTML = clients.map((c,i)=>`<tr>
+    <td><div style="display:flex;align-items:center;gap:9px"><div style="width:28px;height:28px;border-radius:7px;background:${AVC(i)};display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#fff">${INI(c.name)}</div><div><div style="font-weight:500">${c.name}</div><div style="font-size:10.5px;color:var(--muted)">${c.email||''}</div></div></div></td>
+    <td style="color:var(--muted)">${c.phone}</td>
+    <td style="color:var(--muted)">${c.city}</td>
+    <td>${c.siteCount} site${c.siteCount!==1?'s':''}</td>
+    <td style="font-weight:500;color:var(--accent3)">${c.totalValue?FMT(c.totalValue):'—'}</td>
+    <td>${statusPill(c.status)}</td>
+    <td><button class="btn btn-danger" style="font-size:11px;padding:5px 10px" onclick="deleteClient(${c.id})">Delete</button></td>
+  </tr>`).join('') || `<tr><td colspan="7" style="text-align:center;color:var(--muted);padding:28px">No clients found</td></tr>`;
+}
+
+async function submitClient() {
+  const name = document.getElementById('c-name').value.trim();
+  const phone= document.getElementById('c-phone').value.trim();
+  const city = document.getElementById('c-city').value.trim();
+  if (!name) { showToast('Name is required','var(--accent2)'); return; }
+  await api.post('/clients', { name, phone, city, email: document.getElementById('c-email').value, address: document.getElementById('c-addr').value });
+  closeModal('m-client');
+  showToast('Client added','var(--accent3)');
+  await loadClients();
+}
+
+async function deleteClient(id) {
+  await api.del(`/clients/${id}`);
+  showToast('Client removed','var(--accent2)');
+  await loadClients();
+}
+
+// ══════════════════════════════════════════════════════
+//  LABOUR
+// ══════════════════════════════════════════════════════
+async function loadLabour() {
+  const workers = await api.get('/workers');
+  const present = workers.filter(w=>w.todayStatus==='present').length;
+  const absent  = workers.filter(w=>w.todayStatus==='absent').length;
+  const wages   = workers.reduce((a,w)=>a+(w.todayStatus==='present'?w.dailyWage*26:0),0);
+
+  document.getElementById('labour-kpis').innerHTML = [
+    kpiCard(`<svg fill="none" stroke="#43e8a0" stroke-width="1.8" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>`,'#43e8a0', present,'Present Today','Today',true,.05),
+    kpiCard(`<svg fill="none" stroke="#ff6b6b" stroke-width="1.8" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>`,'#ff6b6b', absent,'Absent Today','Today',false,.1),
+    kpiCard(`<svg fill="none" stroke="#ffa94d" stroke-width="1.8" viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>`,'#ffa94d', FMT(wages),'Est. Monthly Wages','26 working days',true,.15),
+  ].join('');
+
+  document.getElementById('labour-tbody').innerHTML = workers.map((w,i)=>`<tr>
+    <td><div style="display:flex;align-items:center;gap:9px"><div style="width:28px;height:28px;border-radius:50%;background:${AVC(i)};display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#fff">${INI(w.name)}</div><div><div style="font-weight:500">${w.name}</div><div style="font-size:10.5px;color:var(--muted)">${w.phone}</div></div></div></td>
+    <td><span class="pill pill-purple" style="font-size:10px">${w.role}</span></td>
+    <td style="color:var(--muted)">${w.siteName||'Unassigned'}</td>
+    <td style="color:var(--muted)">${w.siteCity||'—'}</td>
+    <td style="font-weight:500">₹${Number(w.dailyWage).toLocaleString('en-IN')}/day</td>
+    <td>
+      <select style="background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:4px 8px;color:var(--text);font-size:11.5px;outline:none" onchange="markAttendance(${w.id}, this.value, ${w.siteId||'null'})">
+        <option value="present"${w.todayStatus==='present'?' selected':''}>Present</option>
+        <option value="absent"${w.todayStatus==='absent'?' selected':''}>Absent</option>
+        <option value="half-day"${w.todayStatus==='half-day'?' selected':''}>Half Day</option>
+      </select>
+    </td>
+    <td><button class="btn btn-danger" style="font-size:11px;padding:5px 10px" onclick="deleteWorker(${w.id})">Delete</button></td>
+  </tr>`).join('') || `<tr><td colspan="7" style="text-align:center;color:var(--muted);padding:28px">No workers found</td></tr>`;
+}
+
+async function markAttendance(workerId, status, siteId) {
+  await api.post('/attendance', { workerId, siteId, date: new Date().toISOString(), status });
+  showToast(`Attendance updated: ${status}`,'var(--accent3)');
+  await loadLabour();
+}
+
+async function submitLabour() {
+  const name = document.getElementById('l-name').value.trim();
+  if (!name) { showToast('Name required','var(--accent2)'); return; }
+  const siteId = document.getElementById('l-site').value;
+  const workerId = await api.post('/workers', { name, phone: document.getElementById('l-phone').value, role: document.getElementById('l-role').value, dailyWage: parseFloat(document.getElementById('l-wage').value)||0, siteId: siteId?parseInt(siteId):null });
+  // save today's attendance
+  if (workerId?.id) {
+    await api.post('/attendance', { workerId: workerId.id, siteId: siteId?parseInt(siteId):null, date: new Date().toISOString(), status: document.getElementById('l-today').value });
+  }
+  closeModal('m-labour');
+  showToast('Worker added','var(--accent3)');
+  await loadLabour();
+}
+
+async function deleteWorker(id) {
+  await api.del(`/workers/${id}`);
+  showToast('Worker removed','var(--accent2)');
+  await loadLabour();
+}
+
+// ══════════════════════════════════════════════════════
+//  FINANCE
+// ══════════════════════════════════════════════════════
+async function loadInvoices(status='') {
+  const [invoices, allInv] = await Promise.all([
+    api.get('/invoices' + (status ? `?status=${status}` : '')),
+    api.get('/invoices')
+  ]);
+  const total   = allInv.reduce((a,i)=>a+i.amount,0);
+  const paid    = allInv.filter(i=>i.status==='paid').reduce((a,i)=>a+i.amount,0);
+  const pending = allInv.filter(i=>['pending','sent','overdue'].includes(i.status)).reduce((a,i)=>a+i.amount,0);
+  const overdue = allInv.filter(i=>i.status==='overdue').reduce((a,i)=>a+i.amount,0);
+
+  document.getElementById('finance-kpis').innerHTML = [
+    kpiCard(`<svg fill="none" stroke="#6c63ff" stroke-width="1.8" viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>`,'#6c63ff', FMT(total),'Total Invoiced','All time',true,.05),
+    kpiCard(`<svg fill="none" stroke="#43e8a0" stroke-width="1.8" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>`,'#43e8a0', FMT(paid),'Received','Paid',true,.1),
+    kpiCard(`<svg fill="none" stroke="#ffa94d" stroke-width="1.8" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>`,'#ffa94d', FMT(pending),'Pending','Outstanding',false,.15),
+    kpiCard(`<svg fill="none" stroke="#ff6b6b" stroke-width="1.8" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/></svg>`,'#ff6b6b', FMT(overdue),'Overdue','Action needed',false,.2),
+  ].join('');
+
+  document.getElementById('finance-tbody').innerHTML = invoices.map(iv=>`<tr>
+    <td style="font-family:var(--fd);font-size:12px;font-weight:600">${iv.invoiceNo}</td>
+    <td style="color:var(--muted)">${iv.clientName}</td>
+    <td style="color:var(--muted)">${iv.siteName||'—'}</td>
+    <td style="color:var(--muted)">${FMT_DATE(iv.createdAt)}</td>
+    <td style="font-weight:500">${FMT(iv.amount)}</td>
+    <td>${statusPill(iv.status)}</td>
+    <td style="text-align:right"><button class="btn btn-ghost" style="font-size:11px;padding:5px 10px" onclick="markPaid(${iv.id})">Mark Paid</button></td>
+  </tr>`).join('') || `<tr><td colspan="7" style="text-align:center;color:var(--muted);padding:28px">No invoices found</td></tr>`;
+}
+
+async function markPaid(id) {
+  await api.patch(`/invoices/${id}/status`, { status: 'paid', paidDate: new Date().toISOString() });
+  showToast('Invoice marked as paid','var(--accent3)');
+  await loadInvoices();
+}
+
+async function submitInvoice() {
+  const clientId = parseInt(document.getElementById('i-client').value);
+  const amount   = parseFloat(document.getElementById('i-amount').value);
+  const due      = document.getElementById('i-due').value;
+  if (!clientId || !amount || !due) { showToast('Client, amount and due date required','var(--accent2)'); return; }
+  const siteId = document.getElementById('i-site').value;
+  await api.post('/invoices', { clientId, siteId: siteId?parseInt(siteId):null, amount, dueDate: due, notes: document.getElementById('i-notes').value });
+  closeModal('m-invoice');
+  showToast('Invoice created','var(--accent3)');
+  await loadInvoices();
+}
+
+// ══════════════════════════════════════════════════════
+//  ANALYTICS
+// ══════════════════════════════════════════════════════
+async function renderAnalytics() {
+  const [sites, workers, invoices] = await Promise.all([
+    api.get('/sites'), api.get('/workers'), api.get('/invoices')
+  ]);
+  const avgProgress = sites.length ? Math.round(sites.reduce((a,s)=>a+s.progress,0)/sites.length) : 0;
+  const presentPct  = workers.length ? Math.round(workers.filter(w=>w.todayStatus==='present').length/workers.length*100) : 0;
+  const totalBudget = sites.reduce((a,s)=>a+s.budget,0);
+  const totalInv    = invoices.reduce((a,i)=>a+i.amount,0);
+  const budgetUtil  = totalBudget ? Math.round(totalInv/totalBudget*100) : 0;
+
+  document.getElementById('analytics-kpis').innerHTML = [
+    kpiCard(`<svg fill="none" stroke="#6c63ff" stroke-width="1.8" viewBox="0 0 24 24"><path d="M18 20V10M12 20V4M6 20v-6"/></svg>`,'#6c63ff',`${avgProgress}%`,'Avg Site Progress','','',0.05),
+    kpiCard(`<svg fill="none" stroke="#43e8a0" stroke-width="1.8" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>`,'#43e8a0',`${presentPct}%`,'Labour Attendance','Today',true,0.1),
+    kpiCard(`<svg fill="none" stroke="#ffa94d" stroke-width="1.8" viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>`,'#ffa94d',`${budgetUtil}%`,'Budget Utilisation','Invoiced vs budget','',0.15),
+    kpiCard(`<svg fill="none" stroke="#4ecdc4" stroke-width="1.8" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>`,'#4ecdc4', sites.length,'Total Sites','All time',true,0.2),
+  ].join('');
+
+  // Revenue chart from invoices
+  const byMonth = {};
+  invoices.filter(i=>i.status==='paid').forEach(i=>{
+    const m = new Date(i.createdAt).toLocaleString('en-IN',{month:'short'});
+    byMonth[m] = (byMonth[m]||0) + i.amount;
+  });
+  const months = Object.keys(byMonth);
+  const revs   = months.map(m=>byMonth[m]);
+  const mx     = Math.max(...revs, 1);
+  const colors = ['#6c63ff','#4ecdc4','#43e8a0','#ffa94d','#6c63ff','#4ecdc4','#43e8a0'];
+  document.getElementById('rev-chart').innerHTML = revs.length
+    ? revs.map((v,i)=>`<div class="chart-bar" style="height:${(v/mx*100)}%;background:${colors[i%colors.length]}" title="${months[i]}: ${FMT(v)}"></div>`).join('')
+    : '<div style="color:var(--muted);font-size:12px;padding:24px">No paid invoices yet</div>';
+  document.getElementById('rev-labels').innerHTML = months.map(m=>`<span style="font-size:10px;color:var(--muted)">${m}</span>`).join('');
+
+  // Site progress list
+  document.getElementById('site-progress-list').innerHTML = sites.map(s=>`
+    <div style="margin-bottom:12px">
+      <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:5px"><span>${s.name}</span><span style="color:var(--muted)">${s.progress}%</span></div>
+      <div style="background:var(--surface2);border-radius:3px;height:6px"><div style="width:${s.progress}%;height:100%;background:${sColorMap[s.status]};border-radius:3px;transition:width .5s"></div></div>
+    </div>`).join('') || '<div style="color:var(--muted);font-size:12px">No sites</div>';
+}
+
+// ══════════════════════════════════════════════════════
+//  SETTINGS (static, no API needed)
+// ══════════════════════════════════════════════════════
+function renderSettings() {
+  const tabs = [{k:'profile',l:'Profile'},{k:'company',l:'Company'},{k:'notif',l:'Notifications'},{k:'roles',l:'Roles & Access'}];
+  document.getElementById('settings-nav').innerHTML = tabs.map(t=>`
+    <div class="settings-tab" data-k="${t.k}" style="padding:9px 12px;border-radius:8px;font-size:13px;cursor:pointer;margin-bottom:3px;color:var(--muted);transition:all .15s" onclick="setSettingsTab('${t.k}')">${t.l}</div>`).join('');
+  setSettingsTab('profile');
+}
+
+function setSettingsTab(k) {
+  document.querySelectorAll('.settings-tab').forEach(t=>{
+    const on = t.dataset.k===k;
+    t.style.background = on?'var(--surface3)':'transparent';
+    t.style.color      = on?'var(--text)':'var(--muted)';
+  });
+  const c = {
+    profile:`<div class="card-hd"><div class="card-title">Profile</div></div>
+      <div class="form-grid"><div class="form-row"><label class="form-label">Full Name</label><input class="form-input" value="Rajesh Kumar"/></div>
+      <div class="form-row"><label class="form-label">Phone</label><input class="form-input" value="+91 98765 00001"/></div>
+      <div class="form-row"><label class="form-label">Email</label><input class="form-input" value="rajesh@sitesync.in"/></div>
+      <div class="form-row"><label class="form-label">City</label><input class="form-input" value="Mumbai"/></div></div>
+      <div class="modal-actions" style="margin-top:16px;border:none;padding:0"><button class="btn btn-primary" onclick="showToast('Profile saved','var(--accent3)')">Save Changes</button></div>`,
+    company:`<div class="card-hd"><div class="card-title">Company</div></div>
+      <div class="form-grid"><div class="form-row"><label class="form-label">Company Name</label><input class="form-input" value="RK Interiors Pvt Ltd"/></div>
+      <div class="form-row"><label class="form-label">GSTIN</label><input class="form-input" value="27AABCU9603R1ZN"/></div>
+      <div class="form-row"><label class="form-label">HQ City</label><input class="form-input" value="Mumbai"/></div>
+      <div class="form-row"><label class="form-label">Founded</label><input class="form-input" value="2018"/></div></div>
+      <div class="modal-actions" style="margin-top:16px;border:none;padding:0"><button class="btn btn-primary" onclick="showToast('Saved','var(--accent3)')">Save Changes</button></div>`,
+    notif:`<div class="card-hd"><div class="card-title">Notifications</div></div>
+      ${['Labour check-in alerts','Invoice due reminders','Site progress updates','Material shortage alerts'].map(t=>`
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid var(--border)">
+          <span style="font-size:13px">${t}</span>
+          <div style="width:36px;height:20px;border-radius:10px;background:var(--accent);cursor:pointer;position:relative" onclick="showToast('Updated','var(--accent3)')">
+            <div style="width:16px;height:16px;border-radius:50%;background:#fff;position:absolute;top:2px;right:2px"></div>
+          </div>
+        </div>`).join('')}`,
+    roles:`<div class="card-hd"><div class="card-title">Roles & Access</div></div>
+      ${[['Admin','Full access','#6c63ff'],['Supervisor','Sites, Labour, Finance view','#4ecdc4'],['Viewer','Read-only','#43e8a0']].map(([r,d,c])=>`
+        <div style="display:flex;align-items:center;gap:12px;padding:12px;background:var(--surface2);border-radius:9px;border:1px solid var(--border);margin-bottom:10px">
+          <div style="width:36px;height:36px;border-radius:9px;background:${c}22;display:flex;align-items:center;justify-content:center;font-size:16px">👤</div>
+          <div style="flex:1"><div style="font-size:13px;font-weight:500">${r}</div><div style="font-size:11px;color:var(--muted)">${d}</div></div>
+          <button class="btn btn-ghost" style="font-size:11px;padding:5px 10px">Edit</button>
+        </div>`).join('')}`
+  };
+  document.getElementById('settings-body').innerHTML = c[k]||'';
+}
+
+// ══════════════════════════════════════════════════════
+//  MODALS
+// ══════════════════════════════════════════════════════
+async function openModal(id) {
+  document.getElementById(id).classList.add('open');
+  // Populate dropdowns
+  try {
+    const clients = await api.get('/clients');
+    const sites   = await api.get('/sites');
+    ['s-client','i-client'].forEach(sel=>{
+      const el=document.getElementById(sel);
+      if(el) el.innerHTML='<option value="">Select Client</option>'+clients.map(c=>`<option value="${c.id}">${c.name}</option>`).join('');
+    });
+    ['l-site','i-site'].forEach(sel=>{
+      const el=document.getElementById(sel);
+      if(el) el.innerHTML='<option value="">Select Site</option>'+sites.map(s=>`<option value="${s.id}">${s.name}</option>`).join('');
+    });
+  } catch(e) {}
+  const today=new Date().toISOString().split('T')[0];
+  ['s-date','i-due'].forEach(fid=>{const el=document.getElementById(fid);if(el&&!el.value)el.value=today;});
+}
+
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+document.querySelectorAll('.modal-overlay').forEach(o=>o.addEventListener('click',e=>{if(e.target===o)o.classList.remove('open')}));
+
+// ══════════════════════════════════════════════════════
+//  TOAST
+// ══════════════════════════════════════════════════════
+let _tt;
+function showToast(msg, color='var(--accent3)') {
+  const t=document.getElementById('toast');
+  document.getElementById('toast-msg').textContent=msg;
+  document.getElementById('toast-dot').style.background=color;
+  t.classList.add('show');
+  clearTimeout(_tt);
+  _tt=setTimeout(()=>t.classList.remove('show'),2800);
+}
+
+// ══════════════════════════════════════════════════════
+//  SEARCH
+// ══════════════════════════════════════════════════════
+document.getElementById('gSearch').addEventListener('keydown', async function(e) {
+  if(e.key!=='Enter') return;
+  const q = this.value.trim().toLowerCase();
+  if(!q) return;
+  try {
+    const [sites, clients] = await Promise.all([api.get('/sites'), api.get('/clients')]);
+    const fs = sites.find(s=>s.name.toLowerCase().includes(q)||s.city.toLowerCase().includes(q));
+    if(fs){ navigate('pg-sites'); showToast(`Found: ${fs.name}`,'var(--accent)'); return; }
+    const fc = clients.find(c=>c.name.toLowerCase().includes(q));
+    if(fc){ navigate('pg-clients'); showToast(`Found: ${fc.name}`,'var(--accent)'); return; }
+    showToast('No results found','var(--accent4)');
+  } catch(e) { showToast('Search failed','var(--accent2)'); }
+});
+
+// ══════════════════════════════════════════════════════
+//  INIT
+// ══════════════════════════════════════════════════════
+renderDashboard();
+</script>
+</body>
+</html>

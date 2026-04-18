@@ -1,0 +1,33 @@
+# Node / Angular
+node_modules/
+dist/
+.angular/
+.cache/
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Environment files (secrets)
+src/environments/environment*.ts
+
+# VS Code / IDE
+.vscode/
+.idea/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# .NET
+
+bin/
+obj/
+*.user
+*.suo
+*.cache
+*.vs
+.vs
+# Secrets
+appsettings.Development.json
