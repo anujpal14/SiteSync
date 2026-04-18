@@ -3,7 +3,7 @@ import { HttpInterceptorFn, HttpRequest, HttpHandlerFn, HttpErrorResponse } from
 import { inject }      from '@angular/core';
 import { catchError, throwError } from 'rxjs';
 import { Router }      from '@angular/router';
-import { AuthService } from 'E:/SiteSync/sitesync-angular/src/app/core/interceptors/services/auth.service';
+import { AuthService } from '../services/auth.service';
 
 export const jwtInterceptor: HttpInterceptorFn = (req: HttpRequest<unknown>, next: HttpHandlerFn) => {
   const auth   = inject(AuthService);

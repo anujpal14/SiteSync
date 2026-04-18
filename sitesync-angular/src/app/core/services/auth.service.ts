@@ -3,9 +3,9 @@ import { Injectable, inject, signal, computed } from '@angular/core';
 import { HttpClient }   from '@angular/common/http';
 import { Router }       from '@angular/router';
 import { tap }          from 'rxjs';
-import { environment }  from 'E:/SiteSync/sitesync-angular/src/environments/environment';
+import { environment }  from '../../../environments/environment';
 import { AuthUser, LoginRequest, LoginResponse, UserRole, ROLE_PERMISSIONS } from '../models/auth.models';
-import { ApiResponse }  from 'E:/SiteSync/sitesync-angular/src/app/data/models/models';
+import { ApiResponse }  from '../../data/models/models';
 
 const STORAGE_KEY = 'ss_auth_user';
 

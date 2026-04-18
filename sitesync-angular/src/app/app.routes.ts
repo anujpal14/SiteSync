@@ -1,7 +1,7 @@
 // src/app/app.routes.ts
 import { Routes }      from '@angular/router';
-import { authGuard }   from 'E:/SiteSync/sitesync-angular/src/app/core/interceptors/guards/auth.guards';
-import { roleGuard }   from 'E:/SiteSync/sitesync-angular/src/app/core/interceptors/guards/role.guards';
+import { authGuard }   from './core/guard/auth.guard';
+import { roleGuard }   from './core/guard/role.guard';
 
 export const routes: Routes = [
   // ── Public ────────────────────────────────────────────

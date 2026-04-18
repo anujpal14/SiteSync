@@ -1,10 +1,11 @@
+using DotNetEnv;
 using SiteSync.API.Data;
 using SiteSync.API.Repositories;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 
-
+Env.Load();
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddCors(options =>
