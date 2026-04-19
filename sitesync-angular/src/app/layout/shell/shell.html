@@ -1,0 +1,121 @@
+<div class="shell">
+  @if (isSidebarOpen()) {
+  <div class="sidebar-backdrop" (click)="closeSidebar()"></div>
+  }
+
+  <aside class="sidebar" [class.open]="isSidebarOpen()">
+    <div class="sb-logo">
+      <div class="logo-icon">SS</div>
+      <div class="logo-text">Site<span>Sync</span></div>
+    </div>
+
+    <nav class="nav-section">
+      <div class="nav-label">Main</div>
+      @for (item of visibleMainNav(); track item.path) {
+      <a
+        class="nav-item"
+        [routerLink]="item.path"
+        routerLinkActive="active"
+        [routerLinkActiveOptions]="{ exact: item.path === '/' }"
+        (click)="closeSidebar()"
+      >
+        <span class="nav-icon material-icon">{{ item.icon }}</span>
+        <span class="nav-label-text">{{ item.label }}</span>
+        @if (item.badge) {
+        <span class="nav-badge">{{ item.badge }}</span>
+        }
+      </a>
+      }
+    </nav>
+
+    @if (visibleInsightNav().length > 0) {
+    <nav class="nav-section" style="margin-top: 14px">
+      <div class="nav-label">Insights</div>
+      @for (item of visibleInsightNav(); track item.path) {
+      <a
+        class="nav-item"
+        [routerLink]="item.path"
+        routerLinkActive="active"
+        (click)="closeSidebar()"
+      >
+        <span class="nav-icon material-icon">{{ item.icon }}</span>
+        <span class="nav-label-text">{{ item.label }}</span>
+      </a>
+      }
+    </nav>
+    }
+
+    <div class="role-badge-wrap">
+      <div
+        class="role-badge"
+        [style.background]="roleBadgeColor() + '18'"
+        [style.color]="roleBadgeColor()"
+        [style.border-color]="roleBadgeColor() + '40'"
+      >
+        <span class="material-icon" style="font-size: 13px !important"
+          >{{ roleIcon() }}</span
+        >
+        {{ auth.role() }}
+      </div>
+    </div>
+
+    <div class="sb-footer">
+      <div class="user-card">
+        <div class="user-av">{{ userInitials() }}</div>
+        <div class="user-info">
+          <div class="u-name">{{ auth.fullName() }}</div>
+          <div class="u-role">{{ auth.role() }} · Contractor</div>
+        </div>
+        <button class="logout-btn" (click)="logout()" title="Sign out">
+          <span class="material-icon">logout</span>
+        </button>
+      </div>
+    </div>
+  </aside>
+
+  <div class="main-wrap">
+    <header class="topbar">
+      <div
+        class="tb-left"
+        style="display: flex; align-items: center; gap: 14px"
+      >
+        <div class="mobile-menu-btn" (click)="toggleSidebar()">
+          <span class="material-icon">menu</span>
+        </div>
+        <div>
+          <div class="tb-title">{{ pageTitle() }}</div>
+          <div class="tb-sub">{{ pageSub() }}</div>
+        </div>
+      </div>
+
+      <div class="tb-right">
+        <div class="search-bar desktop-only">
+          <span
+            class="material-icon"
+            style="font-size: 15px; color: var(--muted)"
+            >search</span
+          >
+          <input
+            type="text"
+            placeholder="Search sites, clients…"
+            (keydown.enter)="onSearch($event)"
+          />
+        </div>
+        <div class="icon-btn mobile-only" title="Search">
+          <span class="material-icon">search</span>
+        </div>
+      </div>
+    </header>
+
+    <main class="page-content">
+      <router-outlet />
+    </main>
+  </div>
+</div>
+
+@if (toast()) {
+<div class="toast show">
+  <div class="toast-dot" [style.background]="toast()!.color"></div>
+  <span>{{ toast()!.message }}</span>
+</div>
+}

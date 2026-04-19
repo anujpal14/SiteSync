@@ -1,57 +1,85 @@
-// src/app/app.routes.ts
-import { Routes }      from '@angular/router';
-import { authGuard }   from './core/guard/auth.guard';
-import { roleGuard }   from './core/guard/role.guard';
+import { Routes } from "@angular/router";
+import { authGuard } from "./core/guard/auth.guard";
+import { roleGuard } from "./core/guard/role.guard";
 
 export const routes: Routes = [
-  // ── Public ────────────────────────────────────────────
+  // ── Public — no shell, no sidebar ─────────────────────
   {
-    path: 'login',
-    loadComponent: () => import('./features/auth/login.component').then(m => m.LoginComponent)
+    path: "login",
+    loadComponent: () =>
+      import("./features/auth/login/login").then((m) => m.Login),
   },
 
-  // ── Protected (all roles) ─────────────────────────────
+  // ── Protected — inside shell (sidebar + topbar) ────────
   {
-    path: '',
+    path: "",
     canActivate: [authGuard],
-    loadComponent: () => import('./features/dashboard/dashboard.component').then(m => m.DashboardComponent)
-  },
-  {
-    path: 'sites',
-    canActivate: [authGuard, roleGuard],
-    data: { roles: ['Admin', 'Supervisor'] },
-    loadComponent: () => import('./features/sites/sites.component').then(m => m.SitesComponent)
-  },
-  {
-    path: 'clients',
-    canActivate: [authGuard, roleGuard],
-    data: { roles: ['Admin'] },
-    loadComponent: () => import('./features/clients/clients.component').then(m => m.ClientsComponent)
-  },
-  {
-    path: 'labour',
-    canActivate: [authGuard, roleGuard],
-    data: { roles: ['Admin', 'Supervisor', 'Labour'] },
-    loadComponent: () => import('./features/labour/labour.component').then(m => m.LabourComponent)
-  },
-  {
-    path: 'finance',
-    canActivate: [authGuard, roleGuard],
-    data: { roles: ['Admin'] },
-    loadComponent: () => import('./features/finance/finance.component').then(m => m.FinanceComponent)
-  },
-  {
-    path: 'analytics',
-    canActivate: [authGuard, roleGuard],
-    data: { roles: ['Admin', 'Supervisor'] },
-    loadComponent: () => import('./features/analytics/analytics.component').then(m => m.AnalyticsComponent)
-  },
-  {
-    path: 'settings',
-    canActivate: [authGuard, roleGuard],
-    data: { roles: ['Admin'] },
-    loadComponent: () => import('./features/settings/settings.component').then(m => m.SettingsComponent)
+    loadComponent: () =>
+      import("./layout/shell/shell").then((m) => m.ShellComponent),
+    children: [
+      {
+        path: "",
+        loadComponent: () =>
+          import("./features/dashboard/dashboard.component").then(
+            (m) => m.DashboardComponent,
+          ),
+      },
+      {
+        path: "sites",
+        canActivate: [roleGuard],
+        data: { roles: ["Admin", "Supervisor"] },
+        loadComponent: () =>
+          import("./features/sites/sites.component").then(
+            (m) => m.SitesComponent,
+          ),
+      },
+      {
+        path: "clients",
+        canActivate: [roleGuard],
+        data: { roles: ["Admin"] },
+        loadComponent: () =>
+          import("./features/clients/clients.component").then(
+            (m) => m.ClientsComponent,
+          ),
+      },
+      {
+        path: "labour",
+        canActivate: [roleGuard],
+        data: { roles: ["Admin", "Supervisor", "Labour"] },
+        loadComponent: () =>
+          import("./features/labour/labour.component").then(
+            (m) => m.LabourComponent,
+          ),
+      },
+      {
+        path: "finance",
+        canActivate: [roleGuard],
+        data: { roles: ["Admin"] },
+        loadComponent: () =>
+          import("./features/finance/finance.component").then(
+            (m) => m.FinanceComponent,
+          ),
+      },
+      {
+        path: "analytics",
+        canActivate: [roleGuard],
+        data: { roles: ["Admin", "Supervisor"] },
+        loadComponent: () =>
+          import("./features/analytics/analytics.component").then(
+            (m) => m.AnalyticsComponent,
+          ),
+      },
+      {
+        path: "settings",
+        canActivate: [roleGuard],
+        data: { roles: ["Admin"] },
+        loadComponent: () =>
+          import("./features/settings/settings.component").then(
+            (m) => m.SettingsComponent,
+          ),
+      },
+    ],
   },
 
-  { path: '**', redirectTo: '' }
+  { path: "**", redirectTo: "" },
 ];

@@ -1,0 +1,94 @@
+<div class="login-page">
+  <div class="login-left">
+    <div class="left-content">
+      <div class="brand">
+        <div class="brand-icon">SS</div>
+        <span class="brand-name">Site<span>Sync</span></span>
+      </div>
+      <h1 class="left-headline">Manage every site,<br />from one place.</h1>
+      <p class="left-sub">
+        The interior contractor platform built for teams that move fast — track
+        labour, budgets, and timelines without the chaos.
+      </p>
+    </div>
+    <div class="left-glow"></div>
+  </div>
+
+  <div class="login-right">
+    <div class="login-card">
+      <div class="card-header">
+        <div class="card-logo">
+          <div class="logo-icon">SS</div>
+          <div class="logo-text">Site<span>Sync</span></div>
+        </div>
+        <h2 class="card-title">Welcome back</h2>
+        <p class="card-sub">Sign in to your workspace</p>
+      </div>
+
+      <form
+        [formGroup]="form"
+        (ngSubmit)="submit()"
+        class="login-form"
+        autocomplete="off"
+      >
+        <div class="form-group">
+          <label class="form-label" for="usernameInput">Username</label>
+          <div class="input-wrap">
+            <span class="input-icon material-symbols-outlined">person</span>
+            <input
+              id="usernameInput"
+              class="form-input"
+              formControlName="username"
+              placeholder="Enter your username"
+              autocomplete="username"
+            />
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="passwordInput">Password</label>
+          <div class="input-wrap">
+            <span class="input-icon material-symbols-outlined">lock</span>
+            <input
+              id="passwordInput"
+              class="form-input"
+              formControlName="password"
+              [type]="showPw() ? 'text' : 'password'"
+              placeholder="Enter your password"
+              autocomplete="current-password"
+            />
+            <button
+              type="button"
+              class="pw-toggle"
+              (click)="showPw.update(v => !v)"
+              [title]="showPw() ? 'Hide password' : 'Show password'"
+              aria-label="Toggle password visibility"
+            >
+              <span class="material-symbols-outlined">
+                {{ showPw() ? 'visibility_off' : 'visibility' }}
+              </span>
+            </button>
+          </div>
+        </div>
+
+        @if (error()) {
+        <div class="error-banner" role="alert">
+          <span class="material-symbols-outlined">error</span>
+          {{ error() }}
+        </div>
+        }
+
+        <button
+          type="submit"
+          class="btn-login"
+          [disabled]="form.invalid || loading()"
+        >
+          @if (loading()) {
+          <span class="spinner"></span> Signing in… } @else { Sign In
+          <span class="material-symbols-outlined btn-arrow">arrow_forward</span>
+          }
+        </button>
+      </form>
+    </div>
+  </div>
+</div>

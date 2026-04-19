@@ -1,92 +1,89 @@
+/* src/styles.scss */
 
-// Include theming for Angular Material with `mat.theme()`.
-// This Sass mixin will define CSS variables that are used for styling Angular Material
-// components according to the Material 3 design spec.
-// Learn more about theming and how to use it for your application's
-// custom components at https://material.angular.dev/guide/theming
-@use '@angular/material' as mat;
+@use "@angular/material" as mat;
 
 html {
   height: 100%;
-  @include mat.theme((
-    color: (
-      primary: mat.$azure-palette,
-      tertiary: mat.$blue-palette,
-    ),
-    typography: Roboto,
-    density: 0,
-  ));
+  @include mat.theme(
+    (
+      color: (
+        primary: mat.$azure-palette,
+        tertiary: mat.$blue-palette,
+      ),
+      typography: Roboto,
+      density: 0,
+    )
+  );
 }
-
-body {
-  // Default the application to a light color theme. This can be changed to
-  // `dark` to enable the dark color theme, or to `light dark` to defer to the
-  // user's system settings.
-  color-scheme: light;
-
-  // Set a default background, font and text colors for the application using
-  // Angular Material's system-level CSS variables. Learn more about these
-  // variables at https://material.angular.dev/guide/system-variables
-  background-color: var(--mat-sys-surface);
-  color: var(--mat-sys-on-surface);
-  font: var(--mat-sys-body-medium);
-
-  // Reset the user agent margin.
-  margin: 0;
-  height: 100%;
-}
-/* src/styles.scss */
 
 /* ── GOOGLE FONTS ── */
-@import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,400&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200');
+@import url("https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,400&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200");
 
 /* ── DESIGN TOKENS ── */
 :root {
-  --bg:       #0f0f13;
-  --surface:  #17171f;
+  --bg: #0f0f13;
+  --surface: #17171f;
   --surface2: #1e1e28;
   --surface3: #252532;
-  --border:   rgba(255, 255, 255, 0.07);
-  --border2:  rgba(255, 255, 255, 0.13);
-  --text:     #f0eff8;
-  --muted:    #8a899a;
-  --muted2:   #5a5968;
-  --accent:   #6c63ff;
-  --teal:     #4ecdc4;
-  --green:    #43e8a0;
-  --amber:    #ffa94d;
-  --red:      #ff6b6b;
-  --purple:   #a78bfa;
-  --r:        14px;
-  --rs:       9px;
+  --border: rgba(255, 255, 255, 0.07);
+  --border2: rgba(255, 255, 255, 0.13);
+  --text: #f0eff8;
+  --muted: #8a899a;
+  --muted2: #5a5968;
+  --accent: #6c63ff;
+  --teal: #4ecdc4;
+  --green: #43e8a0;
+  --amber: #ffa94d;
+  --red: #ff6b6b;
+  --purple: #a78bfa;
+  --r: 14px;
+  --rs: 9px;
 }
 
 /* ── RESET ── */
-*, *::before, *::after {
+*,
+*::before,
+*::after {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
 }
 
+/* ── BASE HTML / BODY ── */
 html {
   font-size: 14px;
   scroll-behavior: smooth;
+  /* CRITICAL: prevent horizontal scroll on mobile */
+  overflow-x: hidden;
+  -webkit-text-size-adjust: 100%; /* Prevent iOS font size inflation */
+  text-size-adjust: 100%;
 }
 
 body {
   background: var(--bg);
   color: var(--text);
-  font-family: 'DM Sans', sans-serif;
+  font-family: "DM Sans", sans-serif;
   min-height: 100vh;
+  min-height: 100dvh; /* Dynamic viewport height — fixes mobile browser bar issue */
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden; /* No horizontal scroll */
+  color-scheme: dark;
+
+  /* Override Angular Material body defaults */
+  background-color: var(--bg) !important;
+  color: var(--text) !important;
+  font: unset;
+  font-family: "DM Sans", sans-serif;
+  margin: 0;
+  height: 100%;
 }
 
 /* ── MATERIAL SYMBOLS ── */
 .material-icon,
 .material-symbols-outlined {
-  font-family: 'Material Symbols Outlined';
+  font-family: "Material Symbols Outlined";
   font-weight: normal;
   font-style: normal;
   font-size: 20px;
@@ -97,19 +94,32 @@ body {
   white-space: nowrap;
   word-wrap: normal;
   direction: ltr;
-  font-feature-settings: 'liga';
-  -webkit-font-feature-settings: 'liga';
+  font-feature-settings: "liga";
+  -webkit-font-feature-settings: "liga";
   -webkit-font-smoothing: antialiased;
 }
 
 /* ── SCROLLBAR ── */
-::-webkit-scrollbar { width: 4px; height: 4px; }
-::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 10px; }
+::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--border2);
+  border-radius: 10px;
+}
 
 /* ── TYPOGRAPHY ── */
-h1, h2, h3, h4, h5, h6 {
-  font-family: 'Syne', sans-serif;
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: "Syne", sans-serif;
   font-weight: 700;
   color: var(--text);
 }
@@ -134,13 +144,16 @@ a {
 }
 
 /* ── FORM ELEMENTS ── */
-input, select, textarea {
-  font-family: 'DM Sans', sans-serif;
+input,
+select,
+textarea {
+  font-family: "DM Sans", sans-serif;
   font-size: 13px;
   color: var(--text);
 }
 
-input::placeholder, textarea::placeholder {
+input::placeholder,
+textarea::placeholder {
   color: var(--muted2);
 }
 
@@ -156,8 +169,14 @@ router-outlet + * {
 }
 
 @keyframes pageIn {
-  from { opacity: 0; transform: translateY(8px); }
-  to   { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 /* ── VIEW TRANSITIONS ── */
@@ -180,12 +199,19 @@ router-outlet + * {
 }
 
 @media (max-width: 1200px) {
-  .kpi-grid  { grid-template-columns: repeat(2, 1fr); }
-  .kpi-grid3 { grid-template-columns: repeat(2, 1fr); }
+  .kpi-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .kpi-grid3 {
+    grid-template-columns: repeat(2, 1fr);
+  }
 }
 
 @media (max-width: 768px) {
-  .kpi-grid, .kpi-grid3 { grid-template-columns: 1fr; }
+  .kpi-grid,
+  .kpi-grid3 {
+    grid-template-columns: 1fr;
+  }
 }
 
 /* ── TABLE SHARED ── */
@@ -211,13 +237,17 @@ router-outlet + * {
     vertical-align: middle;
   }
 
-  tr:last-child td { border-bottom: none; }
+  tr:last-child td {
+    border-bottom: none;
+  }
 
   tbody tr {
     transition: background 0.1s;
     cursor: default;
 
-    &:hover td { background: rgba(255, 255, 255, 0.02); }
+    &:hover td {
+      background: rgba(255, 255, 255, 0.02);
+    }
   }
 }
 
@@ -229,19 +259,37 @@ router-outlet + * {
   padding: 20px;
   transition: border-color 0.2s;
 
-  &:hover { border-color: var(--border2); }
+  &:hover {
+    border-color: var(--border2);
+  }
 }
 
 /* ── UTILITY ── */
-.muted  { color: var(--muted) !important; }
-.accent { color: var(--accent) !important; }
-.green  { color: var(--green)  !important; }
-.red    { color: var(--red)    !important; }
-.amber  { color: var(--amber)  !important; }
+.muted {
+  color: var(--muted) !important;
+}
+.accent {
+  color: var(--accent) !important;
+}
+.green {
+  color: var(--green) !important;
+}
+.red {
+  color: var(--red) !important;
+}
+.amber {
+  color: var(--amber) !important;
+}
 
-.fw-500 { font-weight: 500; }
-.fw-600 { font-weight: 600; }
-.syne   { font-family: 'Syne', sans-serif; }
+.fw-500 {
+  font-weight: 500;
+}
+.fw-600 {
+  font-weight: 600;
+}
+.syne {
+  font-family: "Syne", sans-serif;
+}
 
 .ellipsis {
   overflow: hidden;
@@ -251,12 +299,33 @@ router-outlet + * {
 
 /* ── SHIMMER ANIMATION ── */
 @keyframes shimmer {
-  0%   { background-position: 200% 0; }
-  100% { background-position: -200% 0; }
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
 }
 
 .shimmer {
-  background: linear-gradient(90deg, var(--surface) 25%, var(--surface2) 50%, var(--surface) 75%);
+  background: linear-gradient(
+    90deg,
+    var(--surface) 25%,
+    var(--surface2) 50%,
+    var(--surface) 75%
+  );
   background-size: 200% 100%;
   animation: shimmer 1.4s infinite;
+}
+
+/* ── MOBILE FONT SCALE ── */
+@media (max-width: 767px) {
+  html {
+    font-size: 13px;
+  }
+}
+@media (max-width: 399px) {
+  html {
+    font-size: 12px;
+  }
 }
