@@ -7,7 +7,7 @@ export const routes: Routes = [
   {
     path: "login",
     loadComponent: () =>
-      import("./features/auth/login/login").then((m) => m.Login),
+      import("./features/auth/login/login.component").then((m) => m.Login),
   },
 
   // ── Protected — inside shell (sidebar + topbar) ────────
@@ -15,7 +15,7 @@ export const routes: Routes = [
     path: "",
     canActivate: [authGuard],
     loadComponent: () =>
-      import("./layout/shell/shell").then((m) => m.ShellComponent),
+      import("./layout/shell/shell.component").then((m) => m.ShellComponent),
     children: [
       {
         path: "",

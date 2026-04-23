@@ -14,6 +14,7 @@ import { Subscription } from "rxjs";
 import { ToastService, Toast } from "../../shared/components/ui.components";
 import { AuthService } from "../../core/services/auth.service";
 import { ROLE_PERMISSIONS } from "../../core/models/auth.models";
+import { ConfirmModalComponent } from "@shared/components/confirm-modal.component";
 
 interface NavItem {
   path: string;
@@ -28,9 +29,15 @@ type Role = "Admin" | "Supervisor" | "Labour";
 @Component({
   selector: "ss-shell",
   standalone: true,
-  imports: [RouterOutlet, RouterLink, RouterLinkActive, CommonModule],
-  templateUrl: "./shell.html",
-  styleUrl: "./shell.scss",
+  imports: [
+    RouterOutlet,
+    RouterLink,
+    RouterLinkActive,
+    CommonModule,
+    ConfirmModalComponent,
+  ],
+  templateUrl: "./shell.component.html",
+  styleUrl: "./shell.component.scss",
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ShellComponent implements OnInit, OnDestroy {

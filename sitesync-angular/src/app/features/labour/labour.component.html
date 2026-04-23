@@ -1,0 +1,194 @@
+<div class="page-hd">
+  <div>
+    <h1 class="page-title">Labour</h1>
+    <p class="page-sub">Workers, attendance & wages</p>
+  </div>
+  <button
+    class="btn-primary"
+    style="display: flex; align-items: center; gap: 6px"
+    (click)="showModal.set(true)"
+  >
+    <span class="material-icon" style="font-size: 18px">person_add</span> Add
+    Worker
+  </button>
+</div>
+
+<div class="kpi-grid3" style="margin-bottom: 20px">
+  <ss-kpi
+    [value]="present().toString()"
+    label="Present Today"
+    icon="check_circle"
+    iconColor="#43e8a0"
+    trend="Today"
+    [trendUp]="true"
+  />
+  <ss-kpi
+    [value]="absent().toString()"
+    label="Absent Today"
+    icon="cancel"
+    iconColor="#ff6b6b"
+  />
+  <ss-kpi
+    [value]="wages() | inrFormat"
+    label="Est. Monthly Wages"
+    icon="payments"
+    iconColor="#ffa94d"
+  />
+</div>
+
+<div class="card">
+  <div class="card-hd">
+    <div style="display: flex; align-items: center; gap: 10px">
+      <span class="material-icon" style="color: #4ecdc4">engineering</span>
+      <div class="card-title">All Workers ({{ workers().length }})</div>
+    </div>
+  </div>
+  @if (loading()) {
+    <div class="loading-rows">
+      @for (i of [1, 2, 3, 4]; track i) {
+        <div class="shimmer-row"></div>
+      }
+    </div>
+  } @else if (workers().length === 0) {
+    <ss-empty
+      emoji="👷"
+      title="No workers"
+      subtitle="Add workers and assign them to sites"
+      actionLabel="Add Worker"
+      (action)="showModal.set(true)"
+    />
+  } @else {
+    <div class="table-responsive">
+      <table class="ss-table">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Role</th>
+            <th>Site</th>
+            <th>City</th>
+            <th>Daily Wage</th>
+            <th>Today</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (w of workers(); track w.id; let i = $index) {
+            <tr>
+              <td>
+                <div style="display: flex; align-items: center; gap: 9px">
+                  <ss-avatar
+                    [name]="w.name"
+                    [size]="28"
+                    [index]="i"
+                    [fontSize]="10"
+                  />
+                  <div>
+                    <div style="font-weight: 500">{{ w.name }}</div>
+                    <div style="font-size: 10.5px; color: var(--muted)">
+                      {{ w.phone }}
+                    </div>
+                  </div>
+                </div>
+              </td>
+              <td>
+                <span class="role-pill">{{ w.role }}</span>
+              </td>
+              <td class="muted">{{ w.siteName || "Unassigned" }}</td>
+              <td class="muted">{{ w.siteCity || "—" }}</td>
+              <td style="font-weight: 500">
+                ₹{{ w.dailyWage.toLocaleString("en-IN") }}/day
+              </td>
+              <td>
+                <button
+                  class="att-btn"
+                  [class.present]="w.todayStatus === 'present'"
+                  [class.absent]="w.todayStatus === 'absent'"
+                  (click)="toggleAttend(w)"
+                >
+                  <span class="material-icon">
+                    {{ w.todayStatus === "present" ? "check" : "close" }}
+                  </span>
+                  {{ w.todayStatus === "present" ? "Present" : "Absent" }}
+                </button>
+              </td>
+              <td>
+                <button class="btn-danger-sm" (click)="del(w.id)">
+                  <span class="material-icon">delete_outline</span> Delete
+                </button>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+</div>
+
+<ss-modal
+  [open]="showModal()"
+  title="Add New Worker"
+  (closed)="showModal.set(false)"
+>
+  <form [formGroup]="form" (ngSubmit)="submit()">
+    <div class="form-grid">
+      <div class="form-row">
+        <label class="form-label">Full Name</label>
+        <input
+          class="form-input"
+          formControlName="name"
+          placeholder="e.g. Ravi Teja"
+        />
+      </div>
+      <div class="form-row">
+        <label class="form-label">Role</label>
+        <select class="form-input" formControlName="role">
+          @for (r of roles; track r) {
+            <option [value]="r">{{ r }}</option>
+          }
+        </select>
+      </div>
+      <div class="form-row">
+        <label class="form-label">Phone</label>
+        <input
+          class="form-input"
+          formControlName="phone"
+          placeholder="+91 98765 43210"
+        />
+      </div>
+      <div class="form-row">
+        <label class="form-label">Daily Wage (₹)</label>
+        <input
+          class="form-input"
+          type="number"
+          formControlName="dailyWage"
+          placeholder="e.g. 800"
+        />
+      </div>
+      <div class="form-row">
+        <label class="form-label">Assign to Site</label>
+        <select class="form-input" formControlName="siteId">
+          <option value="">Select Site (optional)</option>
+          @for (s of sites(); track s.id) {
+            <option [value]="s.id">{{ s.name }}</option>
+          }
+        </select>
+      </div>
+      <div class="form-row">
+        <label class="form-label">Today's Status</label>
+        <select class="form-input" formControlName="todayStatus">
+          <option value="present">Present</option>
+          <option value="absent">Absent</option>
+        </select>
+      </div>
+    </div>
+    <div class="modal-actions">
+      <button type="button" class="btn-ghost" (click)="showModal.set(false)">
+        Cancel
+      </button>
+      <button type="submit" class="btn-primary" [disabled]="form.invalid">
+        Add Worker
+      </button>
+    </div>
+  </form>
+</ss-modal>
+<ss-confirm-modal />

@@ -1,0 +1,185 @@
+<div class="page-hd">
+  <div>
+    <h1 class="page-title">Sites</h1>
+    <p class="page-sub">Manage all your project locations</p>
+  </div>
+  <button class="btn-primary" (click)="openModal()">
+    <span class="material-icon" style="font-size: 18px">add</span> Add Site
+  </button>
+</div>
+
+<div class="kpi-grid3" style="margin-bottom: 20px">
+  <ss-kpi
+    [value]="active().toString()"
+    label="Active"
+    icon="check_circle"
+    iconColor="#43e8a0"
+  />
+  <ss-kpi
+    [value]="hold().toString()"
+    label="On Hold"
+    icon="pause_circle"
+    iconColor="#ffa94d"
+  />
+  <ss-kpi
+    [value]="done().toString()"
+    label="Complete"
+    icon="task_alt"
+    iconColor="#6c63ff"
+  />
+</div>
+
+<div class="card">
+  <div class="card-hd">
+    <div style="display: flex; align-items: center; gap: 10px">
+      <span class="material-icon" style="color: #6c63ff">corporate_fare</span>
+      <div class="card-title">All Sites ({{ sites().length }})</div>
+    </div>
+    <select class="filter-sel" (change)="onFilter($event)">
+      <option value="">All Status</option>
+      <option value="active">Active</option>
+      <option value="hold">On Hold</option>
+      <option value="done">Completed</option>
+    </select>
+  </div>
+
+  @if (loading()) {
+    <div class="loading-rows">
+      @for (i of [1, 2, 3, 4, 5]; track i) {
+        <div class="shimmer-row"></div>
+      }
+    </div>
+  } @else if (sites().length === 0) {
+    <ss-empty
+      emoji="🏗️"
+      title="No sites found"
+      subtitle="Add your first project site"
+      actionLabel="Add Site"
+      (action)="openModal()"
+    />
+  } @else {
+    <div class="table-responsive">
+      <table class="ss-table">
+        <thead>
+          <tr>
+            <th>Site Name</th>
+            <th>City</th>
+            <th>Client</th>
+            <th>Start Date</th>
+            <th>Budget</th>
+            <th>Progress</th>
+            <th>Status</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (site of sites(); track site.id) {
+            <tr>
+              <td>
+                <span
+                  class="dot"
+                  [style.background]="sColor(site.status)"
+                ></span>
+                <strong>{{ site.name }}</strong>
+              </td>
+              <td class="muted">{{ site.city }}</td>
+              <td class="muted">{{ site.clientName }}</td>
+              <td class="muted">{{ site.startDate | ssDate }}</td>
+              <td class="muted">{{ site.budget | inrFormat }}</td>
+              <td>
+                <ss-progress
+                  [progress]="site.progress"
+                  [status]="site.status"
+                />
+              </td>
+              <td><ss-pill [status]="site.status" /></td>
+              <td>
+                <button class="btn-danger-sm" (click)="deleteSite(site.id)">
+                  <span class="material-icon">delete_outline</span> Delete
+                </button>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+</div>
+
+<ss-modal
+  [open]="showModal()"
+  title="Add New Site"
+  (closed)="showModal.set(false)"
+>
+  <form [formGroup]="form" (ngSubmit)="submitSite()">
+    <div class="form-grid">
+      <div class="form-row">
+        <label class="form-label">Site Name</label>
+        <input
+          class="form-input"
+          formControlName="name"
+          placeholder="e.g. Sharma Villa"
+        />
+      </div>
+      <div class="form-row">
+        <label class="form-label">City</label>
+        <input
+          class="form-input"
+          formControlName="city"
+          placeholder="e.g. Mumbai"
+        />
+      </div>
+      <div class="form-row">
+        <label class="form-label">Client</label>
+        <select class="form-input" formControlName="clientId">
+          <option value="">Select Client</option>
+          @for (c of clients(); track c.id) {
+            <option [value]="c.id">{{ c.name }}</option>
+          }
+        </select>
+      </div>
+      <div class="form-row">
+        <label class="form-label">Start Date</label>
+        <input class="form-input" type="date" formControlName="startDate" />
+      </div>
+      <div class="form-row">
+        <label class="form-label">Budget (₹)</label>
+        <input
+          class="form-input"
+          type="number"
+          formControlName="budget"
+          placeholder="e.g. 1500000"
+        />
+      </div>
+      <div class="form-row">
+        <label class="form-label">Status</label>
+        <select class="form-input" formControlName="status">
+          <option value="active">Active</option>
+          <option value="hold">On Hold</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-row">
+      <label class="form-label">Address</label>
+      <input
+        class="form-input"
+        formControlName="address"
+        placeholder="Full site address"
+      />
+    </div>
+    <div class="modal-actions">
+      <button type="button" class="btn-ghost" (click)="showModal.set(false)">
+        Cancel
+      </button>
+      <button
+        type="submit"
+        class="btn-primary"
+        [disabled]="form.invalid || saving()"
+      >
+        {{ saving() ? "Adding…" : "Add Site" }}
+      </button>
+    </div>
+  </form>
+</ss-modal>
+
+<ss-confirm-modal />

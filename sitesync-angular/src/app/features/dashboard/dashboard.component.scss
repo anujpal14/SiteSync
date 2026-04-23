@@ -1,0 +1,400 @@
+:host {
+  display: block;
+}
+
+.dashboard-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* Base Grids */
+.kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 14px;
+}
+
+.attend-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+}
+
+.mid-row {
+  display: grid;
+  grid-template-columns: 1fr 300px;
+  gap: 14px;
+}
+
+.bot-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+}
+
+/* Card Styles */
+.card {
+  background: var(--surface);
+  border: 0.5px solid var(--border);
+  border-radius: 14px;
+  padding: 20px;
+  min-width: 0; /* CRITICAL FIX: Stops the grid from blowing out on mobile */
+}
+
+.card-hd {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+/* Added Icon styling for Card Headers */
+.card-hd .material-icon {
+  font-size: 18px;
+  color: var(--muted);
+  background: var(--surface2);
+  padding: 6px;
+  border-radius: 8px;
+}
+
+.card-title {
+  font-family: "Syne", sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: -0.3px;
+  color: var(--text);
+}
+
+.link-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  background: none;
+  border: 0.5px solid var(--border);
+  border-radius: 7px;
+  color: var(--accent);
+  font-size: 11.5px;
+  padding: 4px 6px 4px 10px;
+  cursor: pointer;
+}
+.link-btn .material-icon {
+  font-size: 15px;
+  padding: 0;
+  background: none;
+  color: var(--accent);
+}
+.link-btn:hover {
+  background: rgba(108, 99, 255, 0.1);
+}
+
+/* Table Wrapper for Responsiveness */
+.table-responsive {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.table-responsive::-webkit-scrollbar {
+  height: 4px;
+}
+.table-responsive::-webkit-scrollbar-thumb {
+  background: var(--border2);
+  border-radius: 4px;
+}
+
+/* Table */
+.ss-table {
+  width: 100%;
+  border-collapse: collapse;
+  white-space: nowrap; /* Prevents text from breaking on mobile */
+}
+.ss-table th {
+  text-align: left;
+  font-size: 10px;
+  font-weight: 500;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  padding: 0 0 10px;
+  border-bottom: 0.5px solid var(--border);
+}
+.ss-table td {
+  padding: 11px 0;
+  font-size: 12.5px;
+  border-bottom: 0.5px solid var(--border);
+  vertical-align: middle;
+  padding-right: 12px;
+}
+.ss-table tr:last-child td {
+  border-bottom: none;
+}
+.ss-table tbody tr {
+  cursor: pointer;
+  transition: background 0.1s;
+}
+.ss-table tbody tr:hover td {
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.dot {
+  display: inline-block;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  margin-right: 8px;
+}
+.muted {
+  color: var(--muted) !important;
+}
+
+/* Attendance Chips */
+.attend-chip {
+  padding: 14px 16px;
+  border-radius: 10px;
+  border-width: 0.5px;
+  border-style: solid;
+}
+.ac-val {
+  font-family: "Syne", sans-serif;
+  font-size: 20px;
+  font-weight: 700;
+}
+.ac-lbl {
+  font-size: 11px;
+  color: var(--muted);
+  margin-top: 3px;
+}
+
+/* Activity */
+.activity-list {
+  display: flex;
+  flex-direction: column;
+}
+.act-item {
+  display: flex;
+  gap: 11px;
+  align-items: flex-start;
+  padding: 10px 0;
+  border-bottom: 0.5px solid var(--border);
+}
+.act-item:last-child {
+  border-bottom: none;
+}
+.act-icon {
+  width: 30px;
+  height: 30px;
+  border-radius: 8px;
+  background: rgba(108, 99, 255, 0.12);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  flex-shrink: 0;
+}
+.act-body {
+  flex: 1;
+}
+.act-text {
+  font-size: 12px;
+  color: var(--text);
+  line-height: 1.5;
+}
+.act-time {
+  font-size: 10.5px;
+  color: var(--muted);
+  margin-top: 2px;
+}
+
+/* Mini items */
+.mini-item {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 9px;
+  background: var(--surface2);
+  border-radius: 9px;
+  border: 0.5px solid var(--border);
+  margin-bottom: 8px;
+}
+.mi-info {
+  flex: 1;
+  min-width: 0;
+}
+.mi-name {
+  font-size: 12.5px;
+  font-weight: 500;
+  color: var(--text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.mi-sub {
+  font-size: 10.5px;
+  color: var(--muted);
+}
+.mi-val {
+  font-size: 12.5px;
+  font-weight: 500;
+  color: #43e8a0;
+  flex-shrink: 0;
+}
+.status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+/* Mini chart */
+.mini-chart {
+  height: 56px;
+  display: flex;
+  align-items: flex-end;
+  gap: 3px;
+  margin: 14px 0 5px;
+}
+.bar-col {
+  flex: 1;
+  border-radius: 2px 2px 0 0;
+  background: rgba(108, 99, 255, 0.2);
+  cursor: pointer;
+  transition: background 0.15s;
+  min-height: 4px;
+}
+.bar-col:hover,
+.bar-col.hl {
+  background: var(--accent);
+}
+.chart-labels {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 14px;
+}
+.chart-labels span {
+  font-size: 9.5px;
+  color: var(--muted);
+  flex: 1;
+  text-align: center;
+}
+
+/* Fin rows */
+.fin-rows {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.fin-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.fin-lbl {
+  font-size: 12px;
+  color: var(--muted);
+  flex: 1;
+}
+.fin-track {
+  width: 90px;
+  height: 5px;
+  background: var(--surface2);
+  border-radius: 3px;
+  overflow: hidden;
+}
+.fin-fill {
+  height: 100%;
+  border-radius: 3px;
+}
+.fin-amt {
+  font-size: 12px;
+  font-weight: 500;
+  min-width: 56px;
+  text-align: right;
+  color: var(--text);
+}
+
+/* Shimmer Loading */
+.loading-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 14px;
+}
+.shimmer-card {
+  height: 110px;
+  border-radius: 14px;
+  background: linear-gradient(
+    90deg,
+    var(--surface) 25%,
+    var(--surface2) 50%,
+    var(--surface) 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.4s infinite;
+}
+@keyframes shimmer {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+.error-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 60px 20px;
+  text-align: center;
+  color: var(--muted);
+}
+.btn-primary {
+  background: var(--accent);
+  color: #fff;
+  border: none;
+  border-radius: 9px;
+  padding: 10px 20px;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+/* 📱 RESPONSIVE BREAKPOINTS - DO NOT REMOVE */
+
+@media (max-width: 1024px) {
+  .kpi-grid,
+  .loading-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .attend-row {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .mid-row {
+    grid-template-columns: 1fr; /* Stack table and activity feed */
+  }
+  .bot-row {
+    grid-template-columns: repeat(
+      2,
+      1fr
+    ); /* Top clients will drop to next line */
+  }
+}
+
+@media (max-width: 768px) {
+  .kpi-grid,
+  .loading-grid {
+    grid-template-columns: 1fr; /* Stack KPIs entirely on phones */
+  }
+  .bot-row {
+    grid-template-columns: 1fr; /* Stack all 3 bottom cards */
+  }
+  .card {
+    padding: 16px; /* Slightly smaller padding for small screens */
+  }
+}
+
+@media (max-width: 480px) {
+  .attend-row {
+    grid-template-columns: 1fr; /* Stack attendance chips entirely on very small screens */
+  }
+}

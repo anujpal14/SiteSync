@@ -1,0 +1,129 @@
+<div class="page-hd">
+  <div>
+    <h1 class="page-title">Settings</h1>
+    <p class="page-sub">Platform and account preferences</p>
+  </div>
+</div>
+
+<div class="settings-layout">
+  <div class="settings-nav card">
+    @for (tab of tabs; track tab.key) {
+      <div
+        class="settings-tab"
+        [class.active]="activeTab() === tab.key"
+        (click)="activeTab.set(tab.key)"
+      >
+        <span class="material-icon tab-icon">{{ tab.icon }}</span>
+        {{ tab.label }}
+      </div>
+    }
+  </div>
+
+  <div class="settings-body card">
+    @switch (activeTab()) {
+      @case ("profile") {
+        <div class="section-title">Profile</div>
+        <form
+          [formGroup]="profileForm"
+          (ngSubmit)="save('Profile')"
+          class="settings-form"
+        >
+          <div class="form-grid">
+            <div class="form-row">
+              <label class="form-label">Full Name</label>
+              <input class="form-input" formControlName="name" />
+            </div>
+            <div class="form-row">
+              <label class="form-label">Phone</label>
+              <input class="form-input" formControlName="phone" />
+            </div>
+            <div class="form-row">
+              <label class="form-label">Email</label>
+              <input class="form-input" formControlName="email" />
+            </div>
+            <div class="form-row">
+              <label class="form-label">City</label>
+              <input class="form-input" formControlName="city" />
+            </div>
+          </div>
+          <button type="submit" class="btn-primary">
+            <span class="material-icon" style="font-size: 16px">save</span> Save
+            Changes
+          </button>
+        </form>
+      }
+
+      @case ("company") {
+        <div class="section-title">Company</div>
+        <form
+          [formGroup]="companyForm"
+          (ngSubmit)="save('Company')"
+          class="settings-form"
+        >
+          <div class="form-grid">
+            <div class="form-row">
+              <label class="form-label">Company Name</label>
+              <input class="form-input" formControlName="companyName" />
+            </div>
+            <div class="form-row">
+              <label class="form-label">GSTIN</label>
+              <input class="form-input" formControlName="gstin" />
+            </div>
+            <div class="form-row">
+              <label class="form-label">HQ City</label>
+              <input class="form-input" formControlName="city" />
+            </div>
+            <div class="form-row">
+              <label class="form-label">Founded Year</label>
+              <input class="form-input" formControlName="founded" />
+            </div>
+          </div>
+          <button type="submit" class="btn-primary">
+            <span class="material-icon" style="font-size: 16px">save</span> Save
+            Changes
+          </button>
+        </form>
+      }
+
+      @case ("notifications") {
+        <div class="section-title">Notifications</div>
+        @for (n of notifications; track n.label) {
+          <div class="notif-row">
+            <div class="notif-info">
+              <div class="notif-label">{{ n.label }}</div>
+              <div class="notif-sub">{{ n.sub }}</div>
+            </div>
+            <div
+              class="toggle"
+              [class.on]="n.enabled"
+              (click)="n.enabled = !n.enabled; save('Notification')"
+            >
+              <div class="toggle-thumb"></div>
+            </div>
+          </div>
+        }
+      }
+
+      @case ("roles") {
+        <div class="section-title">Roles & Access</div>
+        @for (role of roles; track role.name) {
+          <div class="role-card">
+            <div class="role-ic" [style.background]="role.color + '20'">
+              <span class="material-icon" [style.color]="role.color"
+                >person</span
+              >
+            </div>
+            <div class="role-info">
+              <div class="role-name">{{ role.name }}</div>
+              <div class="role-desc">{{ role.desc }}</div>
+            </div>
+            <button class="btn-ghost-sm" (click)="save('Role')">
+              <span class="material-icon" style="font-size: 14px">edit</span>
+              Edit
+            </button>
+          </div>
+        }
+      }
+    }
+  </div>
+</div>

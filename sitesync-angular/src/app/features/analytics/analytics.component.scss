@@ -1,0 +1,261 @@
+:host {
+  display: block;
+}
+
+.page-hd {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 24px;
+}
+
+.page-title {
+  font-family: "Syne", sans-serif;
+  font-size: 20px; /* Reverted */
+  font-weight: 700;
+  color: var(--text);
+}
+
+.page-sub {
+  font-size: 12px; /* Reverted */
+  color: var(--muted);
+  margin-top: 3px;
+}
+
+/* 📱 Responsive Grids */
+.kpi-grid4 {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 14px;
+  margin-bottom: 24px;
+}
+
+.two-col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+/* Professional Card Styling with your old paddings/radius */
+.card {
+  background: var(--surface);
+  border: 0.5px solid var(--border);
+  border-radius: 14px; /* Reverted */
+  padding: 20px; /* Reverted */
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.card:hover {
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.06);
+}
+
+.card-hd {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 16px; /* Reverted */
+  padding-bottom: 12px;
+  border-bottom: 1px dashed var(--border2);
+}
+
+.card-hd .material-icon {
+  font-size: 18px;
+  color: var(--muted);
+  background: var(--surface2);
+  padding: 6px;
+  border-radius: 8px;
+}
+
+.card-title {
+  font-family: "Syne", sans-serif;
+  font-size: 14px; /* Reverted */
+  font-weight: 700;
+  color: var(--text);
+}
+
+/* Charts & Bars */
+.chart-wrap {
+  overflow: hidden;
+}
+.bars {
+  display: flex;
+  align-items: flex-end;
+  gap: 6px; /* Reverted */
+  height: 160px; /* Reverted */
+  padding-bottom: 24px;
+  position: relative;
+}
+
+.bar-group {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px; /* Reverted */
+  height: 100%;
+  justify-content: flex-end;
+  position: relative;
+}
+
+.bar-val {
+  font-size: 9px; /* Reverted */
+  color: var(--muted);
+  white-space: nowrap;
+  position: absolute;
+  top: -18px; /* Reverted */
+}
+
+.bar-col {
+  width: 100%;
+  border-radius: 4px 4px 0 0; /* Reverted */
+  background: rgba(108, 99, 255, 0.25);
+  min-height: 4px;
+  transition: background 0.2s;
+  cursor: pointer;
+}
+
+.bar-col:hover,
+.bar-col.hl {
+  background: var(--accent);
+}
+
+.bar-lbl {
+  font-size: 9.5px; /* Reverted */
+  color: var(--muted);
+  position: absolute;
+  bottom: -20px; /* Reverted */
+}
+
+.no-data {
+  color: var(--muted);
+  font-size: 12px; /* Reverted */
+  text-align: center;
+  padding: 40px;
+  background: var(--surface2);
+  border-radius: 8px;
+  border: 1px dashed var(--border);
+}
+
+/* Progress Rows */
+.progress-row {
+  margin-bottom: 14px;
+} /* Reverted */
+.pr-top {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 5px; /* Reverted */
+}
+.pr-name {
+  font-size: 12px;
+  color: var(--text);
+} /* Reverted */
+.pr-pct {
+  font-size: 11.5px;
+  color: var(--muted);
+} /* Reverted */
+.pr-track {
+  height: 6px; /* Reverted */
+  background: var(--surface2);
+  border-radius: 3px; /* Reverted */
+  overflow: hidden;
+}
+.pr-fill {
+  height: 100%;
+  border-radius: 3px;
+  transition: width 0.5s;
+}
+
+/* Status Grid */
+.status-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+} /* Reverted */
+.sb-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+} /* Reverted */
+.sb-count {
+  font-family: "Syne", sans-serif;
+  font-size: 20px; /* Reverted */
+  font-weight: 700;
+  min-width: 32px; /* Reverted */
+}
+.sb-bar-wrap {
+  flex: 1;
+  height: 8px;
+  background: var(--surface2);
+  border-radius: 4px;
+  overflow: hidden;
+}
+.sb-bar {
+  height: 100%;
+  border-radius: 4px;
+}
+.sb-label {
+  font-size: 12px;
+  color: var(--muted);
+  min-width: 64px;
+} /* Reverted */
+
+/* Budget Rows */
+.budget-row {
+  display: flex;
+  align-items: center;
+  gap: 10px; /* Reverted */
+  margin-bottom: 12px; /* Reverted */
+}
+.br-name {
+  font-size: 12px; /* Reverted */
+  color: var(--text);
+  width: 120px; /* Reverted */
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.br-bars {
+  flex: 1;
+}
+.br-track {
+  height: 5px; /* Reverted */
+  background: var(--surface2);
+  border-radius: 3px; /* Reverted */
+  overflow: hidden;
+}
+.br-fill {
+  height: 100%;
+  border-radius: 3px;
+}
+.br-amt {
+  font-size: 11.5px; /* Reverted */
+  color: var(--muted);
+  min-width: 56px; /* Reverted */
+  text-align: right;
+}
+
+/* 📱 RESPONSIVE BREAKPOINTS (Do not delete these, varna mobile pe sab kharab ho jayega) */
+@media (max-width: 1024px) {
+  .kpi-grid4 {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .kpi-grid4 {
+    grid-template-columns: 1fr;
+  }
+  .two-col {
+    grid-template-columns: 1fr;
+  }
+  .card {
+    padding: 16px;
+  }
+  .br-name {
+    width: 100px;
+  }
+}
