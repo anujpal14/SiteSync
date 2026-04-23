@@ -61,6 +61,15 @@ export const routes: Routes = [
           ),
       },
       {
+        path: "reports",
+        canActivate: [authGuard, roleGuard],
+        data: { roles: ["Admin", "Supervisor"] },
+        loadComponent: () =>
+          import("./features/reports/reports.component").then(
+            (m) => m.ReportsComponent,
+          ),
+      },
+      {
         path: "analytics",
         canActivate: [roleGuard],
         data: { roles: ["Admin", "Supervisor"] },

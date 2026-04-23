@@ -76,6 +76,12 @@ export class ShellComponent implements OnInit, OnDestroy {
       routeKey: "analytics",
     },
     {
+      path: "/reports",
+      label: "Reports",
+      icon: "description",
+      routeKey: "reports",
+    },
+    {
       path: "/settings",
       label: "Settings",
       icon: "settings",
@@ -86,17 +92,15 @@ export class ShellComponent implements OnInit, OnDestroy {
   visibleMainNav = computed(() => {
     const role = this.auth.role();
     if (!role) return [];
-    return this.allMainNav.filter((i) =>
-      ROLE_PERMISSIONS[role].includes(i.routeKey),
-    );
+    const allowed = ROLE_PERMISSIONS[role];
+    return this.allMainNav.filter((item) => allowed.includes(item.routeKey));
   });
 
   visibleInsightNav = computed(() => {
     const role = this.auth.role();
     if (!role) return [];
-    return this.allInsightNav.filter((i) =>
-      ROLE_PERMISSIONS[role].includes(i.routeKey),
-    );
+    const allowed = ROLE_PERMISSIONS[role];
+    return this.allInsightNav.filter((item) => allowed.includes(item.routeKey));
   });
 
   userInitials = computed(() =>
@@ -129,7 +133,20 @@ export class ShellComponent implements OnInit, OnDestroy {
     return role ? map[role] : "person";
   });
 
-  // Mobile navigation methods
+  // ── Page meta ─────────────────────────────────────────────────────
+  readonly pageMeta: Record<string, { title: string; sub: string }> = {
+    "/": { title: "Dashboard", sub: "Overview across all sites" },
+    "/sites": { title: "Sites", sub: "Manage all project locations" },
+    "/clients": { title: "Clients", sub: "All your client relationships" },
+    "/labour": { title: "Labour", sub: "Workers, attendance & wages" },
+    "/finance": { title: "Finance", sub: "Budgets, invoices & payments" },
+    "/analytics": { title: "Analytics", sub: "Performance across all sites" },
+    // REPORTS META ADDED HERE
+    "/reports": { title: "Reports", sub: "Generate and download PDF reports" },
+    "/settings": { title: "Settings", sub: "Platform preferences" },
+  };
+
+  // MISSING METHODS RESTORED: Mobile toggle methods required by HTML
   toggleSidebar() {
     this.isSidebarOpen.update((v) => !v);
   }
@@ -144,11 +161,6 @@ export class ShellComponent implements OnInit, OnDestroy {
     this.auth.logout();
   }
 
-  onSearch(e: Event) {
-    const q = (e.target as HTMLInputElement).value.trim();
-    if (q) console.log("Search:", q);
-  }
-
   ngOnInit() {
     this.sub = this.toastSvc.toast$.subscribe((t) => {
       this.toast.set(t);
@@ -158,5 +170,10 @@ export class ShellComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.sub?.unsubscribe();
+  }
+
+  onSearch(e: Event) {
+    const q = (e.target as HTMLInputElement).value.trim();
+    if (q) console.log("Search:", q);
   }
 }
