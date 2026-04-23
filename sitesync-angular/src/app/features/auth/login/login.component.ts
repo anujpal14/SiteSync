@@ -14,8 +14,8 @@ import { AuthService } from "@core/services/auth.service";
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [CommonModule, ReactiveFormsModule],
-  templateUrl: "./login.html",
-  styleUrl: "./login.scss",
+  templateUrl: "./login.component.html",
+  styleUrl: "./login.component.scss",
 })
 export class Login {
   private auth = inject(AuthService);

@@ -1,6 +1,6 @@
 <div class="shell">
   @if (isSidebarOpen()) {
-  <div class="sidebar-backdrop" (click)="closeSidebar()"></div>
+    <div class="sidebar-backdrop" (click)="closeSidebar()"></div>
   }
 
   <aside class="sidebar" [class.open]="isSidebarOpen()">
@@ -12,37 +12,34 @@
     <nav class="nav-section">
       <div class="nav-label">Main</div>
       @for (item of visibleMainNav(); track item.path) {
-      <a
-        class="nav-item"
-        [routerLink]="item.path"
-        routerLinkActive="active"
-        [routerLinkActiveOptions]="{ exact: item.path === '/' }"
-        (click)="closeSidebar()"
-      >
-        <span class="nav-icon material-icon">{{ item.icon }}</span>
-        <span class="nav-label-text">{{ item.label }}</span>
-        @if (item.badge) {
-        <span class="nav-badge">{{ item.badge }}</span>
-        }
-      </a>
+        <a
+          class="nav-item"
+          [routerLink]="item.path"
+          routerLinkActive="active"
+          [routerLinkActiveOptions]="{ exact: item.path === '/' }"
+          (click)="closeSidebar()"
+        >
+          <span class="nav-icon material-icon">{{ item.icon }}</span>
+          <span class="nav-label-text">{{ item.label }}</span>
+        </a>
       }
     </nav>
 
     @if (visibleInsightNav().length > 0) {
-    <nav class="nav-section" style="margin-top: 14px">
-      <div class="nav-label">Insights</div>
-      @for (item of visibleInsightNav(); track item.path) {
-      <a
-        class="nav-item"
-        [routerLink]="item.path"
-        routerLinkActive="active"
-        (click)="closeSidebar()"
-      >
-        <span class="nav-icon material-icon">{{ item.icon }}</span>
-        <span class="nav-label-text">{{ item.label }}</span>
-      </a>
-      }
-    </nav>
+      <nav class="nav-section" style="margin-top: 14px">
+        <div class="nav-label">Insights</div>
+        @for (item of visibleInsightNav(); track item.path) {
+          <a
+            class="nav-item"
+            [routerLink]="item.path"
+            routerLinkActive="active"
+            (click)="closeSidebar()"
+          >
+            <span class="nav-icon material-icon">{{ item.icon }}</span>
+            <span class="nav-label-text">{{ item.label }}</span>
+          </a>
+        }
+      </nav>
     }
 
     <div class="role-badge-wrap">
@@ -52,9 +49,9 @@
         [style.color]="roleBadgeColor()"
         [style.border-color]="roleBadgeColor() + '40'"
       >
-        <span class="material-icon" style="font-size: 13px !important"
-          >{{ roleIcon() }}</span
-        >
+        <span class="material-icon" style="font-size: 13px !important">{{
+          roleIcon()
+        }}</span>
         {{ auth.role() }}
       </div>
     </div>
@@ -64,7 +61,7 @@
         <div class="user-av">{{ userInitials() }}</div>
         <div class="user-info">
           <div class="u-name">{{ auth.fullName() }}</div>
-          <div class="u-role">{{ auth.role() }} · Contractor</div>
+          <div class="u-role">{{ auth.role() }}</div>
         </div>
         <button class="logout-btn" (click)="logout()" title="Sign out">
           <span class="material-icon">logout</span>
@@ -89,20 +86,17 @@
       </div>
 
       <div class="tb-right">
-        <div class="search-bar desktop-only">
-          <span
-            class="material-icon"
-            style="font-size: 15px; color: var(--muted)"
-            >search</span
+        <div class="tb-right">
+          <div
+            class="user-av-sm"
+            [style.background]="roleBadgeColor() + '18'"
+            [style.color]="roleBadgeColor()"
+            [style.border-color]="roleBadgeColor() + '40'"
+            title="{{ auth.fullName() }}"
+            routerLink="/settings"
           >
-          <input
-            type="text"
-            placeholder="Search sites, clients…"
-            (keydown.enter)="onSearch($event)"
-          />
-        </div>
-        <div class="icon-btn mobile-only" title="Search">
-          <span class="material-icon">search</span>
+            {{ userInitials() }}
+          </div>
         </div>
       </div>
     </header>
@@ -114,8 +108,10 @@
 </div>
 
 @if (toast()) {
-<div class="toast show">
-  <div class="toast-dot" [style.background]="toast()!.color"></div>
-  <span>{{ toast()!.message }}</span>
-</div>
+  <div class="toast show">
+    <div class="toast-dot" [style.background]="toast()!.color"></div>
+    <span>{{ toast()!.message }}</span>
+  </div>
 }
+
+<ss-confirm-modal />

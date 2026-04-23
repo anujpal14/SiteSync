@@ -65,17 +65,17 @@
               aria-label="Toggle password visibility"
             >
               <span class="material-symbols-outlined">
-                {{ showPw() ? 'visibility_off' : 'visibility' }}
+                {{ showPw() ? "visibility_off" : "visibility" }}
               </span>
             </button>
           </div>
         </div>
 
         @if (error()) {
-        <div class="error-banner" role="alert">
-          <span class="material-symbols-outlined">error</span>
-          {{ error() }}
-        </div>
+          <div class="error-banner" role="alert">
+            <span class="material-symbols-outlined">error</span>
+            {{ error() }}
+          </div>
         }
 
         <button
@@ -84,8 +84,12 @@
           [disabled]="form.invalid || loading()"
         >
           @if (loading()) {
-          <span class="spinner"></span> Signing in… } @else { Sign In
-          <span class="material-symbols-outlined btn-arrow">arrow_forward</span>
+            <span class="spinner"></span> Signing in…
+          } @else {
+            Sign In
+            <span class="material-symbols-outlined btn-arrow"
+              >arrow_forward</span
+            >
           }
         </button>
       </form>

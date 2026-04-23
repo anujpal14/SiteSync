@@ -1,0 +1,149 @@
+<div class="page-hd">
+  <div>
+    <h1 class="page-title">Clients</h1>
+    <p class="page-sub">All your client relationships</p>
+  </div>
+  <button
+    class="btn-primary"
+    style="display: flex; align-items: center; gap: 6px"
+    (click)="showModal.set(true)"
+  >
+    <span class="material-icon" style="font-size: 18px">person_add</span> Add
+    Client
+  </button>
+</div>
+
+<div class="card">
+  <div class="card-hd">
+    <div style="display: flex; align-items: center; gap: 10px">
+      <span class="material-icon" style="color: #43e8a0">groups</span>
+      <div class="card-title">Client Directory ({{ clients().length }})</div>
+    </div>
+  </div>
+  @if (loading()) {
+    <div class="loading-rows">
+      @for (i of [1, 2, 3]; track i) {
+        <div class="shimmer-row"></div>
+      }
+    </div>
+  } @else if (clients().length === 0) {
+    <ss-empty
+      emoji="🤝"
+      title="No clients"
+      subtitle="Add your first client"
+      actionLabel="Add Client"
+      (action)="showModal.set(true)"
+    />
+  } @else {
+    <div class="table-responsive">
+      <table class="ss-table">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Phone</th>
+            <th>City</th>
+            <th>Sites</th>
+            <th>Total Value</th>
+            <th>Status</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (c of clients(); track c.id; let i = $index) {
+            <tr>
+              <td>
+                <div style="display: flex; align-items: center; gap: 10px">
+                  <ss-avatar
+                    [name]="c.name"
+                    [size]="30"
+                    [index]="i"
+                    [rounded]="false"
+                    [fontSize]="10"
+                  />
+                  <div>
+                    <div style="font-weight: 500">{{ c.name }}</div>
+                    <div style="font-size: 10.5px; color: var(--muted)">
+                      {{ c.email }}
+                    </div>
+                  </div>
+                </div>
+              </td>
+              <td class="muted">{{ c.phone }}</td>
+              <td class="muted">{{ c.city }}</td>
+              <td>{{ c.siteCount }} site{{ c.siteCount !== 1 ? "s" : "" }}</td>
+              <td style="font-weight: 500; color: #43e8a0">
+                {{ c.totalValue | inrFormat }}
+              </td>
+              <td><ss-pill [status]="c.status" /></td>
+              <td>
+                <button class="btn-danger-sm" (click)="del(c.id)">
+                  <span class="material-icon">delete_outline</span> Delete
+                </button>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+</div>
+
+<ss-modal
+  [open]="showModal()"
+  title="Add New Client"
+  (closed)="showModal.set(false)"
+>
+  <form [formGroup]="form" (ngSubmit)="submit()">
+    <div class="form-grid">
+      <div class="form-row">
+        <label class="form-label">Full Name</label>
+        <input
+          class="form-input"
+          formControlName="name"
+          placeholder="e.g. Anil Sharma"
+        />
+      </div>
+      <div class="form-row">
+        <label class="form-label">Phone</label>
+        <input
+          class="form-input"
+          formControlName="phone"
+          placeholder="+91 98765 43210"
+        />
+      </div>
+      <div class="form-row">
+        <label class="form-label">Email</label>
+        <input
+          class="form-input"
+          formControlName="email"
+          placeholder="email@example.com"
+        />
+      </div>
+      <div class="form-row">
+        <label class="form-label">City</label>
+        <input
+          class="form-input"
+          formControlName="city"
+          placeholder="e.g. Mumbai"
+        />
+      </div>
+    </div>
+    <div class="form-row">
+      <label class="form-label">Address</label>
+      <input
+        class="form-input"
+        formControlName="address"
+        placeholder="Full address"
+      />
+    </div>
+    <div class="modal-actions">
+      <button type="button" class="btn-ghost" (click)="showModal.set(false)">
+        Cancel
+      </button>
+      <button type="submit" class="btn-primary" [disabled]="form.invalid">
+        Add Client
+      </button>
+    </div>
+  </form>
+</ss-modal>
+<ss-confirm-modal />

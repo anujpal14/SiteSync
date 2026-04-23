@@ -1,0 +1,287 @@
+@if (loading()) {
+  <div class="loading-grid">
+    @for (i of [1, 2, 3, 4]; track i) {
+      <div class="shimmer-card"></div>
+    }
+  </div>
+} @else if (error()) {
+  <div class="error-state">
+    <span style="font-size: 36px">⚠️</span>
+    <p>{{ error() }}</p>
+    <button class="btn-primary" (click)="load()">Retry</button>
+  </div>
+} @else if (dash()) {
+  <div class="dashboard-wrap">
+    <div class="kpi-grid">
+      <ss-kpi
+        value="{{ dash()!.activeSites }}"
+        label="Active Sites"
+        icon="home_work"
+        iconColor="#6c63ff"
+        trend="Live"
+        [trendUp]="true"
+      />
+      <ss-kpi
+        value="{{ dash()!.totalWorkers }}"
+        label="Total Workers"
+        icon="engineering"
+        iconColor="#4ecdc4"
+        trend="On field"
+        [trendUp]="true"
+      />
+      <ss-kpi
+        value="{{ dash()!.totalClients }}"
+        label="Total Clients"
+        icon="people"
+        iconColor="#43e8a0"
+        trend="Active"
+        [trendUp]="true"
+      />
+      <ss-kpi
+        [value]="dash()!.revenueThisMonth | inrFormat"
+        label="Revenue This Month"
+        icon="account_balance_wallet"
+        iconColor="#ffa94d"
+        trend="↑ This month"
+        [trendUp]="true"
+      />
+    </div>
+
+    <div class="attend-row">
+      <div
+        class="attend-chip"
+        style="
+          border-color: rgba(67, 232, 160, 0.25);
+          background: rgba(67, 232, 160, 0.07);
+        "
+      >
+        <div class="ac-val" style="color: #43e8a0">
+          {{ dash()!.presentToday }}
+        </div>
+        <div class="ac-lbl">Present Today</div>
+      </div>
+      <div
+        class="attend-chip"
+        style="
+          border-color: rgba(255, 107, 107, 0.25);
+          background: rgba(255, 107, 107, 0.07);
+        "
+      >
+        <div class="ac-val" style="color: #ff6b6b">
+          {{ dash()!.absentToday }}
+        </div>
+        <div class="ac-lbl">Absent Today</div>
+      </div>
+      <div
+        class="attend-chip"
+        style="
+          border-color: rgba(255, 169, 77, 0.25);
+          background: rgba(255, 169, 77, 0.07);
+        "
+      >
+        <div class="ac-val" style="color: #ffa94d">
+          {{ dash()!.pendingInvoices | inrFormat }}
+        </div>
+        <div class="ac-lbl">Pending Invoices</div>
+      </div>
+      <div
+        class="attend-chip"
+        style="
+          border-color: rgba(108, 99, 255, 0.25);
+          background: rgba(108, 99, 255, 0.07);
+        "
+      >
+        <div class="ac-val" style="color: #6c63ff">
+          {{ dash()!.totalBudget | inrFormat }}
+        </div>
+        <div class="ac-lbl">Total Budget</div>
+      </div>
+    </div>
+
+    <div class="mid-row">
+      <div class="card">
+        <div class="card-hd">
+          <div style="display: flex; align-items: center; gap: 10px">
+            <span class="material-icon" style="color: #6c63ff"
+              >corporate_fare</span
+            >
+            <div class="card-title">Site Overview</div>
+          </div>
+          <button class="link-btn" (click)="goto('/sites')">
+            View all <span class="material-icon">chevron_right</span>
+          </button>
+        </div>
+        <div class="table-responsive">
+          <table class="ss-table">
+            <thead>
+              <tr>
+                <th>Site</th>
+                <th>City</th>
+                <th>Client</th>
+                <th>Progress</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (site of dash()!.recentSites; track site.id) {
+                <tr (click)="goto('/sites')">
+                  <td>
+                    <span
+                      class="dot"
+                      [style.background]="siteColor(site.status)"
+                    ></span>
+                    {{ site.name }}
+                  </td>
+                  <td class="muted">{{ site.city }}</td>
+                  <td class="muted">{{ site.clientName }}</td>
+                  <td>
+                    <ss-progress
+                      [progress]="site.progress"
+                      [status]="site.status"
+                    />
+                  </td>
+                  <td><ss-pill [status]="site.status" /></td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-hd">
+          <div style="display: flex; align-items: center; gap: 10px">
+            <span class="material-icon" style="color: #4ecdc4"
+              >notifications_active</span
+            >
+            <div class="card-title">Recent Activity</div>
+          </div>
+        </div>
+        <div class="activity-list">
+          @for (act of dash()!.activities; track act.id) {
+            <div class="act-item">
+              <div class="act-icon">{{ act.icon }}</div>
+              <div class="act-body">
+                <div class="act-text">{{ act.action }}</div>
+                <div class="act-time">{{ act.timeAgo }}</div>
+              </div>
+            </div>
+          }
+        </div>
+      </div>
+    </div>
+
+    <div class="bot-row">
+      <div class="card">
+        <div class="card-hd">
+          <div style="display: flex; align-items: center; gap: 10px">
+            <span class="material-icon" style="color: #ffa94d"
+              >engineering</span
+            >
+            <div class="card-title">Labour on Sites</div>
+          </div>
+          <button class="link-btn" (click)="goto('/labour')">
+            Manage <span class="material-icon">chevron_right</span>
+          </button>
+        </div>
+        @for (w of dash()!.recentWorkers; track w.id; let i = $index) {
+          <div class="mini-item">
+            <ss-avatar
+              [name]="w.name"
+              [size]="32"
+              [index]="i"
+              [fontSize]="10"
+            />
+            <div class="mi-info">
+              <div class="mi-name">{{ w.name }}</div>
+              <div class="mi-sub">
+                {{ w.role }} · {{ w.siteName || "Unassigned" }}
+              </div>
+            </div>
+            <div
+              class="status-dot"
+              [style.background]="
+                w.todayStatus === 'present' ? '#43e8a0' : '#ff6b6b'
+              "
+            ></div>
+          </div>
+        }
+      </div>
+
+      <div class="card">
+        <div class="card-hd">
+          <div style="display: flex; align-items: center; gap: 10px">
+            <span class="material-icon" style="color: #ff6b6b">payments</span>
+            <div class="card-title">Finance Summary</div>
+          </div>
+          <button class="link-btn" (click)="goto('/finance')">
+            Details <span class="material-icon">chevron_right</span>
+          </button>
+        </div>
+        <div class="mini-chart">
+          @for (
+            r of dash()!.monthlyRevenue;
+            track r.month;
+            let i = $index;
+            let last = $last
+          ) {
+            <div
+              class="bar-col"
+              [class.hl]="last"
+              [style.height.%]="barHeight(r.revenue)"
+              [title]="r.month + ': ' + (r.revenue | inrFormat)"
+            ></div>
+          }
+        </div>
+        <div class="chart-labels">
+          @for (r of dash()!.monthlyRevenue; track r.month) {
+            <span>{{ r.month }}</span>
+          }
+        </div>
+        <div class="fin-rows">
+          @for (row of finRows(); track row.label) {
+            <div class="fin-row">
+              <span class="fin-lbl">{{ row.label }}</span>
+              <div class="fin-track">
+                <div
+                  class="fin-fill"
+                  [style.width.%]="row.pct"
+                  [style.background]="row.color"
+                ></div>
+              </div>
+              <span class="fin-amt">{{ row.amount }}</span>
+            </div>
+          }
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-hd">
+          <div style="display: flex; align-items: center; gap: 10px">
+            <span class="material-icon" style="color: #43e8a0">handshake</span>
+            <div class="card-title">Top Clients</div>
+          </div>
+          <button class="link-btn" (click)="goto('/clients')">
+            View all <span class="material-icon">chevron_right</span>
+          </button>
+        </div>
+        @for (c of dash()!.topClients; track c.id; let i = $index) {
+          <div class="mini-item">
+            <ss-avatar
+              [name]="c.name"
+              [size]="32"
+              [index]="i"
+              [rounded]="false"
+              [fontSize]="10"
+            />
+            <div class="mi-info">
+              <div class="mi-name">{{ c.name }}</div>
+              <div class="mi-sub">{{ c.city }} · {{ c.siteCount }} sites</div>
+            </div>
+            <div class="mi-val">{{ c.totalValue | inrFormat }}</div>
+          </div>
+        }
+      </div>
+    </div>
+  </div>
+}

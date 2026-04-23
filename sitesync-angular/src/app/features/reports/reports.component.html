@@ -1,0 +1,101 @@
+<div class="page-hd">
+  <div>
+    <h1 class="page-title">Reports</h1>
+    <p class="page-sub">Generate and download PDF reports for all modules</p>
+  </div>
+  <button class="btn-ghost" (click)="loadData()" [disabled]="dataLoading()">
+    <span class="material-icon" [class.spin]="dataLoading()">refresh</span>
+    {{ dataLoading() ? "Loading…" : "Refresh Data" }}
+  </button>
+</div>
+
+<div class="status-bar">
+  @if (dataLoading()) {
+    <div class="status-chip loading">
+      <span class="dot-pulse"></span> Fetching live data…
+    </div>
+  } @else if (dataError()) {
+    <div class="status-chip error">
+      <span class="material-icon" style="font-size: 16px">error_outline</span>
+      {{ dataError() }} —
+      <span class="retry-link" (click)="loadData()">retry</span>
+    </div>
+  } @else {
+    <div class="status-chip ok">
+      <span class="material-icon" style="font-size: 16px">cloud_done</span> Live
+      data loaded — <strong>{{ sites().length }}</strong> sites ·
+      <strong>{{ clients().length }}</strong> clients ·
+      <strong>{{ workers().length }}</strong> workers ·
+      <strong>{{ invoices().length }}</strong> invoices
+    </div>
+  }
+</div>
+
+<div class="cards-grid">
+  @for (r of reportCards; track r.id) {
+    <div class="report-card" [style.--accent]="r.accentColor">
+      <div class="card-top">
+        <div class="card-emoji material-icon">{{ r.icon }}</div>
+        <div class="card-info">
+          <div class="card-title">{{ r.title }}</div>
+          <div class="card-desc">{{ r.desc }}</div>
+        </div>
+      </div>
+
+      <div class="data-chips">
+        @if (r.dataKeys.includes("sites")) {
+          <span class="chip">
+            <span class="material-icon chip-icon">location_city</span
+            >{{ sites().length }} sites
+          </span>
+        }
+        @if (r.dataKeys.includes("clients")) {
+          <span class="chip">
+            <span class="material-icon chip-icon">handshake</span
+            >{{ clients().length }} clients
+          </span>
+        }
+        @if (r.dataKeys.includes("workers")) {
+          <span class="chip">
+            <span class="material-icon chip-icon">engineering</span
+            >{{ workers().length }} workers
+          </span>
+        }
+        @if (r.dataKeys.includes("invoices")) {
+          <span class="chip">
+            <span class="material-icon chip-icon">receipt_long</span
+            >{{ invoices().length }} invoices
+          </span>
+        }
+      </div>
+
+      <button
+        class="btn-generate"
+        [disabled]="generating()[r.id] || dataLoading() || !!dataError()"
+        (click)="generate(r.id)"
+      >
+        @if (generating()[r.id]) {
+          <span class="spinner"></span> Generating…
+        } @else {
+          <span class="material-icon btn-icon">picture_as_pdf</span>
+          Generate PDF
+        }
+      </button>
+    </div>
+  }
+</div>
+
+<div class="info-card">
+  <div class="info-title">
+    <span class="material-icon" style="font-size: 18px; color: #6c63ff"
+      >lightbulb</span
+    >
+    How reports work
+  </div>
+  <div class="info-body">
+    Each report fetches <strong>live data</strong> from your API at the moment
+    you click Generate, builds a formatted A4 PDF with your company header, KPI
+    summary boxes, and detailed tables, then downloads it automatically. No
+    server-side rendering needed.
+  </div>
+</div>
